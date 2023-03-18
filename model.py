@@ -20,7 +20,7 @@ def create_strategy(check_plugin):
                                 loggers=[InteractiveLogger()])
     cl_strategy = Naive(
         model, optimizer, criterion,
-        train_mb_size=10, train_epochs=1, eval_mb_size=100, device=device,
+        train_mb_size=100, train_epochs=1, eval_mb_size=200, device=device,
         evaluator=eval_plugin,
         plugins=[check_plugin]
     )

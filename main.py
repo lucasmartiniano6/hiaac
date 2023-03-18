@@ -7,9 +7,13 @@ from model import create_strategy, device
 
 
 def make_tensors(n_exp, file_id):
-    data = torch.from_numpy(genfromtxt(f'PAMAP2_Dataset/Protocol/subject{file_id}.dat'))
-    x = torch.stack([data[i][2:] for i in range(len(data))]).to(torch.float32)
-    y = torch.stack([data[i][1] for i in range(len(data))]).to(torch.int32)
+    data = torch.from_numpy(genfromtxt(f'clean/{file_id}.txt'))
+    
+    x = [data[i][1:] for i in range(len(data))]
+    y = [data[i][0] for i in range(len(data))]
+
+    x = torch.stack(x).to(torch.float32)
+    y = torch.stack(y).to(torch.int32)
 
     sz = x.size()[0] - (x.size()[0] % n_exp) # closest multiple of n_exp
     x = x[:int(sz)]
@@ -22,11 +26,11 @@ def make_tensors(n_exp, file_id):
     return train_tensor
 
 def make_benchmark():
-    n_exp = 10
+    n_exp = 20
     benchmark = tensors_benchmark(
-        train_tensors=make_tensors(n_exp, file_id='101'),
+        train_tensors=make_tensors(n_exp, file_id='101')+make_tensors(n_exp, file_id='102'),
         test_tensors=make_tensors(n_exp, file_id='109'),
-        task_labels=[0 for _ in range(n_exp)],  # for each train exp
+        task_labels=[0 for _ in range(2*n_exp)],  # for each train exp
     )
     return benchmark
 
@@ -56,4 +60,5 @@ def main():
     print(results)
 
 if __name__ == '__main__':
-    main()
+    make_tensors(1, '101')
+    #main()
