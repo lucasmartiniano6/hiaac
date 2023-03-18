@@ -7,7 +7,8 @@ from model import create_strategy, device
 
 
 def make_tensors(n_exp, file_id):
-    data = torch.from_numpy(genfromtxt(f'clean/{file_id}.txt'))
+    path = f'clean/{file_id}.txt'
+    data = torch.from_numpy(genfromtxt(path))
     
     x = [data[i][1:] for i in range(len(data))]
     y = [data[i][0] for i in range(len(data))]
@@ -27,10 +28,13 @@ def make_tensors(n_exp, file_id):
 
 def make_benchmark():
     n_exp = 20
+    train_tensors = make_tensors(n_exp, file_id='103')
+    test_tensors=make_tensors(n_exp, file_id='102')
+    
     benchmark = tensors_benchmark(
-        train_tensors=make_tensors(n_exp, file_id='101')+make_tensors(n_exp, file_id='102'),
-        test_tensors=make_tensors(n_exp, file_id='109'),
-        task_labels=[0 for _ in range(2*n_exp)],  # for each train exp
+        train_tensors=train_tensors,
+        test_tensors=test_tensors,
+        task_labels=[0 for _ in range(len(train_tensors))],  # for each train exp
     )
     return benchmark
 
@@ -60,5 +64,4 @@ def main():
     print(results)
 
 if __name__ == '__main__':
-    make_tensors(1, '101')
-    #main()
+    main()
