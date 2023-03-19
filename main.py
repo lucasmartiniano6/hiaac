@@ -4,14 +4,16 @@ from avalanche.training.plugins.checkpoint import CheckpointPlugin, FileSystemCh
 from avalanche.benchmarks.generators import tensors_benchmark
 from numpy import genfromtxt
 from model import create_strategy, device
+from random import shuffle
 
 
 def make_tensors(n_exp, file_id):
-    path = f'clean/{file_id}.txt'
+#    path = f'clean/{file_id}.txt'
+    path = f'PAMAP2_Dataset/Protocol/subject{file_id}.dat'
     data = torch.from_numpy(genfromtxt(path))
     
-    x = [data[i][1:] for i in range(len(data))]
-    y = [data[i][0] for i in range(len(data))]
+    x = [data[i][2:] for i in range(len(data))]
+    y = [data[i][1] for i in range(len(data))]
 
     x = torch.stack(x).to(torch.float32)
     y = torch.stack(y).to(torch.int32)
@@ -21,15 +23,17 @@ def make_tensors(n_exp, file_id):
     y = y[:int(sz)]
 
     n_samples = int(x.size()[0] / n_exp)
-    train_tensor = []
+    tensor_list = []
     for i in range(0, x.size()[0], n_samples):
-        train_tensor.append((x[i:i+n_samples], y[i:i+n_samples]))
-    return train_tensor
+        tensor_list.append((x[i:i+n_samples], y[i:i+n_samples]))
+    
+    shuffle(tensor_list)
+    return tensor_list
 
 def make_benchmark():
     n_exp = 20
-    train_tensors = make_tensors(n_exp, file_id='103')
-    test_tensors=make_tensors(n_exp, file_id='102')
+    train_tensors = make_tensors(n_exp, file_id='101')+make_tensors(n_exp, file_id='102')
+    test_tensors= make_tensors(n_exp, file_id='103')
     
     benchmark = tensors_benchmark(
         train_tensors=train_tensors,
@@ -51,11 +55,11 @@ def main():
     if cl_strategy is None:
         cl_strategy = create_strategy(check_plugin)
     
+       
     benchmark = make_benchmark()
-
     results = []
     for experience in benchmark.train_stream:
-        print("Start of experience: ", experience.current_experience)
+        print("EXPERIENCE: ", experience.current_experience)
         print("Current Classes: ", experience.classes_in_this_experience)
 
         cl_strategy.train(experience)
