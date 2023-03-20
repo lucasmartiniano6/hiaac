@@ -7,9 +7,11 @@ from model import create_strategy, device
 from random import shuffle
 
 
-def make_tensors(n_exp, file_id):
-#    path = f'clean/{file_id}.txt'
+def make_tensors(n_exp, file_id, clean=False):
     path = f'PAMAP2_Dataset/Protocol/subject{file_id}.dat'
+    if clean:
+        path = f'clean/{file_id}.txt'
+
     data = torch.from_numpy(genfromtxt(path))
     
     x = [data[i][2:] for i in range(len(data))]
@@ -31,9 +33,9 @@ def make_tensors(n_exp, file_id):
     return tensor_list
 
 def make_benchmark():
-    n_exp = 20
-    train_tensors = make_tensors(n_exp, file_id='101')+make_tensors(n_exp, file_id='102')
-    test_tensors= make_tensors(n_exp, file_id='103')
+    n_exp = 10
+    train_tensors = make_tensors(n_exp, '101') + make_tensors(n_exp, '102')
+    test_tensors= make_tensors(n_exp, '108')
     
     benchmark = tensors_benchmark(
         train_tensors=train_tensors,
@@ -55,7 +57,9 @@ def main():
     if cl_strategy is None:
         cl_strategy = create_strategy(check_plugin)
     
-       
+    torch.save(cl_strategy.model.state_dict(), 'saved_model.pth')
+    exit(0)
+
     benchmark = make_benchmark()
     results = []
     for experience in benchmark.train_stream:

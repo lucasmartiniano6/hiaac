@@ -9,7 +9,7 @@ def clean_file(file_id):
     new = []
     for i in range(len(data)):
         if(data[i][1] != 0):
-            new.append(data[i][1:])
+            new.append(data[i])
 
 
     new = np.stack(new)

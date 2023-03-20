@@ -1,0 +1,26 @@
+https://arxiv.org/pdf/2104.09396.pdf
+
+Rehearsal methods significantly outperform regularisation-alone methods
+Among rehearsal methods, ILOS, WA-MDF, and WA-ADB perform the best
+iCaRL performs better than GEM
+Rehearsal methods that tackle imbalance are less plastic to new classes
+There exists a strong effect of the amount and distribution of training data attributes on forgetting
+Holdout size does not impact much on the accuracy
+Regularisation alone does not demonstrate any advantage from a naive finetuning approach
+Seems like memory replay & regularisation terms are dealing with the same problem: interclass discrepancies.
+Therefore, there might not be a distinct advantage for regularisation.
+
+--------
+
+https://research-repository.st-andrews.ac.uk/bitstream/handle/10023/20242/ICML.pdf?sequence=1&isAllowed=y
+Read it.
+
+--------
+Utils
+
+Class labels on each file
+    101:
+        1 2 3 4 5 6 7 12 13 16 17 24
+    
+    102:
+        1 2 3 4 5 6 7 12 13 16 17 24
