@@ -9,7 +9,7 @@ from avalanche.logging import InteractiveLogger
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def create_strategy(check_plugin):
-    model = SimpleMLP(num_classes=25, input_size=52, hidden_size=512, hidden_layers=2)
+    model = SimpleMLP(num_classes=25, input_size=51, hidden_size=512, hidden_layers=2)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     criterion = torch.nn.CrossEntropyLoss()

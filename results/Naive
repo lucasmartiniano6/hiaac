@@ -1,0 +1,4 @@
+(train: 101, test: 108) = accuracy 0.0908
+    CPU Time = 2m39s
+    lr=0.001, momentum=0.9
+    data with NaN is being replaced by 0
