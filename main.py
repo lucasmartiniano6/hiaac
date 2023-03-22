@@ -38,7 +38,7 @@ def make_tensors(n_exp, file_id, clean=True):
 
 def make_benchmark():
     n_exp = 10
-    train_tensors = make_tensors(n_exp, '101') + make_tensors(n_exp, '102')
+    train_tensors = make_tensors(n_exp, '101') 
     test_tensors= make_tensors(n_exp, '108')
     
     benchmark = tensors_benchmark(

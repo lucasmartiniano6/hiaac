@@ -19,7 +19,7 @@ def create_strategy(check_plugin):
                                 loggers=[InteractiveLogger()])
     cl_strategy = GEM(
         model, optimizer, criterion,
-        memory_strength=0.5, patterns_per_exp=25,
+        memory_strength=0.5, patterns_per_exp=100,
         train_mb_size=100, train_epochs=10, eval_mb_size=100, device=device,
         evaluator=eval_plugin
 #        plugins=[check_plugin]  # uncomment this line to activate checkpoints/
