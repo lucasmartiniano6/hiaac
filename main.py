@@ -38,7 +38,7 @@ def make_tensors(n_exp, file_id, clean=True):
 
 def make_benchmark():
     n_exp = 10
-    train_tensors = make_tensors(n_exp, '101')
+    train_tensors = make_tensors(n_exp, '105') +make_tensors(n_exp, '106') + make_tensors(n_exp, '107') 
     test_tensors= make_tensors(n_exp, '108')
     
     benchmark = tensors_benchmark(
@@ -61,7 +61,6 @@ def main():
     if cl_strategy is None:
         cl_strategy = create_strategy(check_plugin)
     
-    torch.save(cl_strategy.model.state_dict(), 'saved_model.pth')
 
     benchmark = make_benchmark()
     results = []
@@ -73,6 +72,7 @@ def main():
         results.append(cl_strategy.eval(benchmark.test_stream))
 
     print(results)
+    torch.save(cl_strategy.model.state_dict(), 'saved_model.pth')
 
 if __name__ == '__main__':
     main()

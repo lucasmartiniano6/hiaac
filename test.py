@@ -32,5 +32,4 @@ x, y = load_file()
 
 with torch.no_grad():
     out = model(x)
-    print(out)
     print(loss(out, y))
