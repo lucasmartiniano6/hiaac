@@ -38,7 +38,7 @@ def make_tensors(n_exp, file_id, clean=True):
 
 def make_benchmark():
     n_exp = 10
-    train_tensors = make_tensors(n_exp, '105') +make_tensors(n_exp, '106') + make_tensors(n_exp, '107') 
+    train_tensors = make_tensors(n_exp, '101') + make_tensors(n_exp, '102')
     test_tensors= make_tensors(n_exp, '108')
     
     benchmark = tensors_benchmark(
@@ -63,6 +63,7 @@ def main():
     
 
     benchmark = make_benchmark()
+#    schedular = torch.optim.lr_scheduler.StepLR(cl_strategy.optimizer, step_size=50)
     results = []
     for experience in benchmark.train_stream:
         print("EXPERIENCE: ", experience.current_experience)
@@ -70,6 +71,7 @@ def main():
 
         cl_strategy.train(experience)
         results.append(cl_strategy.eval(benchmark.test_stream))
+#        schedular.step()
 
     print(results)
     torch.save(cl_strategy.model.state_dict(), 'saved_model.pth')

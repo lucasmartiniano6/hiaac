@@ -1,0 +1,22 @@
+data with NaN is being replaced by 0
+
+(train: 101+102+103+104, test: 108) = accuracy 0.19 (*)
+    CPU Time = 568m41s
+    mem_strength = 0.5, patterns_per_exp=5000
+    lr=0.001, momentum=0.9
+
+(train: 101, test: 108) = accuracy 0.1213 
+    CPU Time = 22m03s
+    mem_strength = 0.5, patterns_per_exp=100
+    lr=0.001, drop_rate=0.001
+
+(train: 101, test: 108) = accuracy 0.0880
+    CPU Time = 23m03s
+    mem_strength = 0.5, patterns_per_exp=100
+    lr=0.01, drop_rate=0.001
+
+(train: 101, test: 108) = accuracy 0.0536
+    CPU Time = 20m34s
+    mem_strength = 0.5, patterns_per_exp=25
+    lr=0.001, drop_rate=0.001
+

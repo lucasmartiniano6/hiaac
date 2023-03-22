@@ -8,7 +8,6 @@ There exists a strong effect of the amount and distribution of training data att
 Holdout size does not impact much on the accuracy
 Regularisation alone does not demonstrate any advantage from a naive finetuning approach
 Seems like memory replay & regularisation terms are dealing with the same problem: interclass discrepancies.
-Therefore, there might not be a distinct advantage for regularisation.
 
 --------
 
@@ -22,10 +21,14 @@ Utils
 94% of 101.dat data points have atleast 1 NaN occurance -> rn we're changing NaN to 0
 
 Does changing NaN to 0 affect the model's performance ???
+New classes ?
 
 Class labels on each file
     101:
         1 2 3 4 5 6 7 12 13 16 17 24
     
     102:
+        1 2 3 4 5 6 7 12 13 16 17 24
+
+    108:
         1 2 3 4 5 6 7 12 13 16 17 24
