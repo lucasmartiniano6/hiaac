@@ -5,22 +5,22 @@ torch_data, targets = make_tensors('a')
 x = torch_data[:2][0]
 y = torch_data[:2][1]
 
-x = x.reshape(x.shape + (1,1))
+x = x.reshape(x.shape + (1,))
 
 layers = torch.nn.Sequential(
-    torch.nn.Conv2d(51, 10, 1, padding='same'),
-    torch.nn.BatchNorm2d(num_features=10),
+    torch.nn.Conv1d(51, 10, 1, padding='same'),
+    torch.nn.BatchNorm1d(num_features=10),
     torch.nn.ReLU(),
 
-    torch.nn.Conv2d(10, 5, 1, padding='same'),
-    torch.nn.BatchNorm2d(num_features=5),
+    torch.nn.Conv1d(10, 5, 1, padding='same'),
+    torch.nn.BatchNorm1d(num_features=5),
     torch.nn.ReLU(),
 
-    torch.nn.Conv2d(5, 1, 1, padding='same'),
-    torch.nn.BatchNorm2d(num_features=1),
+    torch.nn.Conv1d(5, 1, 1, padding='same'),
+    torch.nn.BatchNorm1d(num_features=1),
     torch.nn.ReLU(),
 
-    torch.nn.AvgPool2d(kernel_size=1),
+#    torch.nn.AvgPool2d(kernel_size=1),
     torch.nn.Linear(1, 25),
     torch.nn.Softmax(dim=-1)
 )
