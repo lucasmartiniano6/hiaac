@@ -1,1 +1,1 @@
-python3 runner.py --lr 0.01 
+python3 runner.py --lr 0.001 

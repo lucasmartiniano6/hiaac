@@ -114,7 +114,6 @@ if __name__ == '__main__':
     from benchmark import make_tensors
     torch_data, targets = make_tensors('a')
     x = torch_data[:3][0]
-    x = x.reshape(x.shape + (1,)) # reshape for conv1d
 
     model = ResNetBaseline(in_channels=51, num_pred_classes=25)
 

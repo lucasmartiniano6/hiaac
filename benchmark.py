@@ -17,6 +17,8 @@ def make_tensors(file_id):
 
     x = torch.nn.functional.normalize(x, p = 1.0)
     
+    x = x.reshape(x.shape + (1,)) # reshape for ResNet (conv1d)
+
     torch_data = torch.utils.data.dataset.TensorDataset(x,y)
     return torch_data, y
 
