@@ -11,5 +11,5 @@ mkdir clean && python3 clean.py
 ```
 Then, run the experiment with the desired arguments (check runner.py for more):
 ```
-./runner.sh --epochs 1 --lr 0.001
+python3 runner.py --epochs 1 --lr 0.001
 ```
