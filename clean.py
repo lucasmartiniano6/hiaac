@@ -1,7 +1,9 @@
-# data cleanse
+# Data cleanse
+# Excludes 0 activity-Id data and changes any NaN occurence to 0
+# Saves everything in clean/ folder
+
 import numpy as np
 import torch
-from tqdm import tqdm
 
 def clean_file(file_id):
     path = f'PAMAP2_Dataset/Protocol/subject{file_id}.dat'
@@ -19,5 +21,7 @@ def clean_file(file_id):
     new = np.stack(new)
     np.savetxt(f'clean/{file_id}.txt', new, delimiter=' ', newline='\n')
 
-for i in tqdm(range(101,110)):
-    clean_file(str(i))
+if __name__ == '__main__':
+    from tqdm import tqdm
+    for i in tqdm(range(101,110)):
+        clean_file(str(i))
