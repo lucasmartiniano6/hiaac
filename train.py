@@ -1,7 +1,7 @@
-import torch
 from avalanche.training.determinism.rng_manager import RNGManager
 from avalanche.training.plugins.checkpoint import CheckpointPlugin, FileSystemCheckpointStorage
-import model
+import torch
+from model import create_strategy
 from benchmark import make_benchmark
 
 class Trainer():
@@ -24,8 +24,7 @@ class Trainer():
         cl_strategy, initial_exp = check_plugin.load_checkpoint_if_exists()    
 
         if cl_strategy is None:
-            cl_strategy = model.create_strategy(self.args, check_plugin)
-        
+            cl_strategy = create_strategy(self.args, check_plugin)
 
         benchmark = make_benchmark(self.args)
         results = []
