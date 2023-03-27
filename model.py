@@ -93,22 +93,58 @@ class IlosLoss():
         self.old_model = None
         self.old_logits = None
 
+        self.alpha = 0.5 # n/(n+m)
+        self.beta = 0.5
+        self.temperature = 2
+
     def before_forward(self, strategy, **kwargs):
         if self.old_model is not None:
             with torch.no_grad():
                 self.old_logits = self.old_model(strategy.mb_x)
 
     def __call__(self, logits, targets):
+        torch.autograd.set_detect_anomaly(True)
         predictions = torch.sigmoid(logits)
 
         one_hot = torch.zeros(targets.shape[0], logits.shape[1], dtype=torch.float, device=logits.device)
         one_hot[range(len(targets)), targets.long()] = 1
+        one_hot.requires_grad = True
 
-        if self.old_logits is not None:
-            print(self.old_logits)
-            old_predictions = torch.sigmoid(self.old_logits)
+        if self.old_logits is None:
+            return self.criterion(predictions, one_hot)
 
-        return self.criterion(predictions, one_hot)
+        old_predictions = torch.sigmoid(self.old_logits)
+        old_predictions.requires_grad = True
+
+        # modified ce loss
+        y_hat = one_hot
+        p = predictions
+        p_hat = old_predictions
+        p_tilde = p.clone().detach()
+        p_tilde[:,range(p_hat.shape[1])] = self.beta * p[:,range(p_hat.shape[1])] + (1-self.beta) * p_hat[:,:]
+
+        loss_ce = -(y_hat * p_tilde.log()).sum(dim=-1).mean()
+
+        return loss_ce
+        # knowledge distillation loss
+        inter_h = p_hat.clone().detach()
+        denom_hat = torch.exp(inter_h/self.temperature).sum(dim=-1)
+        pt_hat = torch.exp(inter_h/self.temperature)
+        for i in range(pt_hat.shape[0]):
+            pt_hat[i] = pt_hat[i] / denom_hat[i]
+
+        inter = p.clone().detach()
+        denom = torch.exp(inter[:,range(pt_hat.shape[1])]/self.temperature).sum(dim=-1)
+        pt = torch.exp(inter[:,range(pt_hat.shape[1])]/self.temperature)
+        for i in range(pt.shape[0]):
+            pt[i] = pt[i] / denom[i]
+
+        loss_kd = -(pt_hat * pt.log()).sum(dim=-1).mean()
+        return loss_kd
+        
+        # final ilos loss
+        loss_ilos = self.alpha * loss_kd + (1-self.alpha) * loss_ce
+        return loss_kd
 
     def after_update(self, strategy, **kwargs):
         if self.old_model is None:
