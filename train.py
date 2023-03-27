@@ -33,6 +33,6 @@ class Trainer():
             print("Current Classes: ", experience.classes_in_this_experience)
 
             cl_strategy.train(experience)
-#            results.append(cl_strategy.eval(benchmark.test_stream))
+            results.append(cl_strategy.eval(benchmark.test_stream))
 
         torch.save(cl_strategy.model.state_dict(), 'saved_model.pth')
