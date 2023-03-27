@@ -29,15 +29,12 @@ class Ilos(SupervisedTemplate):
         evaluator = None,
         plugins = None
     ):
-        if plugins is None:
-            plugins = [IlosLoss()] 
-        else:
-            plugis += [IlosLoss()]
-
+        self.crit = IlosLoss()
+        
         super().__init__(
             model,
             optimizer,
-            criterion=IlosLoss(),
+            criterion=self.crit,
             train_mb_size=args.train_mb_size,
             train_epochs=args.epochs,
             eval_mb_size=args.eval_mb_size,
@@ -79,16 +76,20 @@ class Ilos(SupervisedTemplate):
             self.x_memory.append(self.adapted_dataset[examplar_idx[idx]][0])
             self.y_memory.append(self.adapted_dataset[examplar_idx[idx]][1])
 
+    def _before_forward(self, **kwargs):
+        self.crit.before_forward(self)
+        return super()._before_forward(**kwargs)
+    def _after_update(self, **kwargs):
+        self.crit.after_update(self)
+        return super()._after_update(**kwargs)
 
-class IlosLoss(SupervisedPlugin):
+class IlosLoss():
     """
     Modified cross-distillation loss with accommodation ratio 
     """
     def __init__(self):
-        super().__init__()
         self.criterion = nn.BCELoss()
 
-        self.old_classes = []
         self.old_model = None
         self.old_logits = None
 
@@ -100,37 +101,22 @@ class IlosLoss(SupervisedPlugin):
     def __call__(self, logits, targets):
         predictions = torch.sigmoid(logits)
 
-        one_hot = torch.zeros(
-            targets.shape[0],
-            logits.shape[1],
-            dtype=torch.float,
-            device=logits.device,
-        )
+        one_hot = torch.zeros(targets.shape[0], logits.shape[1], dtype=torch.float, device=logits.device)
         one_hot[range(len(targets)), targets.long()] = 1
 
         if self.old_logits is not None:
-            print("\nAAAAAAAAAAA\n")
+            print(self.old_logits)
             old_predictions = torch.sigmoid(self.old_logits)
-            one_hot[:, self.old_classes] = old_predictions[:, self.old_classes]
-            self.old_logits = None
-
-            alpha = beta = 0.5
 
         return self.criterion(predictions, one_hot)
 
     def after_update(self, strategy, **kwargs):
-        print("called")
         if self.old_model is None:
             old_model = copy.deepcopy(strategy.model)
             old_model.eval()
             self.old_model = old_model.to(strategy.device)
 
         self.old_model.load_state_dict(strategy.model.state_dict())
-
-        self.old_classes += np.unique(
-            strategy.experience.dataset.targets
-        ).tolist()
-
 
 def create_strategy(args, check_plugin=None):
     model = ResNetBaseline(in_channels=args.input_size, num_pred_classes=args.total_classes)
@@ -140,6 +126,7 @@ def create_strategy(args, check_plugin=None):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     eval_plugin = EvaluationPlugin(accuracy_metrics(minibatch=True,epoch=True,experience=True,stream=True),
                                 loggers=[InteractiveLogger()])
+    eval_plugin = None
     cl_strategy = Ilos(
         model=model, optimizer=optimizer, 
         args=args, device=device, evaluator=eval_plugin
