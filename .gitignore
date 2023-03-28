@@ -1,5 +1,5 @@
 __pycache__/
-data/
-!data/clean.py
 checkpoints/
 .vscode/
+data/*
+!/data/clean.py
