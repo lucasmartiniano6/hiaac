@@ -44,7 +44,7 @@ class Ilos(SupervisedTemplate):
 
         self.args = args
 
-        self.q_herding = 2 # takes q samples of exemplar set as in ilos paper
+        self.q_herding = 5 # takes q samples of exemplar set as in ilos paper
         self.mem_size = args.mem_size
         self.x_memory = []
         self.y_memory = []
@@ -69,7 +69,7 @@ class Ilos(SupervisedTemplate):
 
     def construct_exemplar_set(self):
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-        examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset)
+        examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(range(self.q_herding)))
         mem_left = self.mem_size - len(self.x_memory)
         for idx in range(min(self.q_herding, mem_left)):
             self.x_memory.append(self.adapted_dataset[examplar_idx[idx]][0])
@@ -117,7 +117,8 @@ class IlosLoss():
         p = predictions
         p_hat = old_predictions
         p_tilde = p.clone().detach()
-        p_tilde[:,range(p_hat.shape[1])] = self.beta * p[:,range(p_hat.shape[1])] + (1-self.beta) * p_hat[:,:]
+        points_len = min(p.shape[0], p_hat.shape[0])
+        p_tilde[:points_len,range(p_hat.shape[1])] = self.beta * p[:points_len,range(p_hat.shape[1])] + (1-self.beta) * p_hat[:points_len,:]
 
         loss_ce = -(y_hat * p_tilde.log()).sum(dim=-1).mean()
 
@@ -136,7 +137,8 @@ class IlosLoss():
 
         pt.requires_grad = True
 
-        loss_kd = -(pt_hat * pt.log()).sum(dim=-1).mean()
+        points_len = min(pt.shape[0], pt_hat.shape[0])
+        loss_kd = -(pt_hat[:points_len] * pt[:points_len].log()).sum(dim=-1).mean()
 
         # final ilos loss
         loss_ilos = self.alpha * loss_kd + (1-self.alpha) * loss_ce
