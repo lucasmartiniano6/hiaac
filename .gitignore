@@ -1,5 +1,5 @@
 __pycache__/
-data/PAMAP2_Dataset/
+data/
 !data/clean.py
 checkpoints/
 .vscode/
