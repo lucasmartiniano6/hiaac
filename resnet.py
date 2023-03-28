@@ -68,21 +68,20 @@ class ResNetBaseline(nn.Module):
             'num_pred_classes': num_pred_classes
         }
 
-        self.layers = nn.Sequential(*[
+        self.feature_extractor = nn.Sequential(*[
             ResNetBlock(in_channels=in_channels, out_channels=mid_channels),
             ResNetBlock(in_channels=mid_channels, out_channels=mid_channels * 2),
             ResNetBlock(in_channels=mid_channels * 2, out_channels=mid_channels * 2),
 
         ])
-        self.final = nn.Linear(mid_channels * 2, num_pred_classes)
+        self.classifier = nn.Linear(mid_channels * 2, num_pred_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:  # type: ignore
-        x = self.layers(x)
-        return self.final(x.mean(dim=-1))
+        x = self.feature_extractor(x)
+        return self.classifier(x.mean(dim=-1))
 
 
 class ResNetBlock(nn.Module):
-
     def __init__(self, in_channels: int, out_channels: int) -> None:
         super().__init__()
 
@@ -104,7 +103,6 @@ class ResNetBlock(nn.Module):
             ])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:  # type: ignore
-
         if self.match_channels:
             return self.layers(x) + self.residual(x)
         return self.layers(x)

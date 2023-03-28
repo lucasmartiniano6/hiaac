@@ -25,11 +25,15 @@ def make_tensors(file_id):
 def make_benchmark(args=None):
     n_exp = args.n_exp if args is not None else 1
 
-    torch_data, targets = make_tensors('a') 
-    torch_data.targets = targets.tolist()
-    torch_data = make_classification_dataset(torch_data)
+    train_data, targets = make_tensors('101') 
+    train_data.targets = targets.tolist()
+    train_data = make_classification_dataset(train_data)
     
-    benchmark = nc_benchmark(train_dataset=torch_data, test_dataset=torch_data,
+    test_data, targets = make_tensors('102') 
+    test_data.targets = targets.tolist()
+    test_data = make_classification_dataset(test_data)
+
+    benchmark = nc_benchmark(train_dataset=train_data, test_dataset=test_data,
                              n_experiences=n_exp, task_labels=False, shuffle=False)
     return benchmark
     

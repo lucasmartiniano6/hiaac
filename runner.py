@@ -14,6 +14,7 @@ parser.add_argument('--epochs', default=1, type=int, help='number of training ep
 parser.add_argument('--n_exp', default=1, type=int, help='number of experiences in the benchmark. Has to be divisor of the number of classes')
 parser.add_argument('--train_mb_size', default=2, type=int, help="train minibatch size")
 parser.add_argument('--eval_mb_size', default=2, type=int, help="eval minibatch size")
+parser.add_argument('--mem_size', default=10, type=int, help="memory size for ilos replay buffer")
 
 args = parser.parse_args()
 

@@ -1,0 +1,7 @@
+data with NaN is being replaced with 0
+
+(train: 101, test: 102) = accuracy 0.26
+    CPU Time = 0m98s
+    mem_size = 50
+    lr=0.01, n_exp=3, epochs=1
+
