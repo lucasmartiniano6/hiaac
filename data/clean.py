@@ -23,5 +23,5 @@ def clean_file(file_id):
 
 if __name__ == '__main__':
     from tqdm import tqdm
-    for i in tqdm(range(101,102)):
+    for i in tqdm(range(101,110)):
         clean_file(str(i))

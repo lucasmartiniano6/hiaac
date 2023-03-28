@@ -4,19 +4,20 @@ Repo for Continual Learning in HAR data.
 
 Usage
 -----
-First, download PAMAP2 Dataset and set up the data folder:
+First, set up the data folder:
 ```
-wget https://archive.ics.uci.edu/ml/machine-learning-databases/00231/PAMAP2_Dataset.zip && unzip PAMAP2_Dataset.zip
-mkdir clean && python3 clean.py
+./setup.sh
 ```
-Then, run the experiment with the desired arguments (check runner.py for more):
+Then, run the experiment with the desired arguments (check ```runner.py``` for more):
 ```
-python3 runner.py --epochs 1 --lr 0.001
+./runner.sh
+# Alternatively, specify experiment arguments:
+python3 runner.py --epochs 1 --mem_size 10
 ```
 
 Implementation
 -----
-ILOS strategy is implemented with memory replay and a modified cross-distillation loss with accommodation ratio. The exemplar set is constructed through herding selection as in the original paper, check model.py for how. We also use a ResNet adapted to time-series, check resnet.py for how.
+ILOS strategy is implemented with memory replay and a modified cross-distillation loss with accommodation ratio. The exemplar set is constructed through herding selection as in the original paper, check ```model.py``` for how. We also use a ResNet adapted to time-series, check ```resnet.py``` for how.
 
 More information:
 * https://arxiv.org/abs/2003.13191
