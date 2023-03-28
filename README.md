@@ -17,7 +17,7 @@ python3 runner.py --epochs 1 --mem_size 10
 
 Implementation
 -----
-ILOS strategy is implemented with memory replay and a modified cross-distillation loss with accommodation ratio. The exemplar set is constructed through herding selection as in the original paper, check ```model.py``` for how. We also use a ResNet adapted to time-series, check ```resnet.py``` for how.
+ILOS strategy is implemented with memory replay and a modified cross-distillation loss with accommodation ratio. The exemplar set is constructed through herding selection as in the original paper, check ```ilos.py``` for how. We also use a ResNet adapted to time-series, check ```resnet.py``` for how.
 
 More information:
 * https://arxiv.org/abs/2003.13191

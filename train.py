@@ -24,10 +24,12 @@ class Trainer():
         cl_strategy, initial_exp = check_plugin.load_checkpoint_if_exists()    
 
         if cl_strategy is None:
-            cl_strategy = create_strategy(self.args, check_plugin)
+            cl_strategy = create_strategy(self.args)
 
+        print("Creating benchmark...")
         benchmark = make_benchmark(self.args)
         results = []
+        print("Strategy: " + self.args.strat)
         for experience in benchmark.train_stream:
             print("EXPERIENCE: ", experience.current_experience)
             print("Current Classes: ", experience.classes_in_this_experience)

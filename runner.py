@@ -15,6 +15,7 @@ parser.add_argument('--n_exp', default=1, type=int, help='number of experiences 
 parser.add_argument('--train_mb_size', default=2, type=int, help="train minibatch size")
 parser.add_argument('--eval_mb_size', default=2, type=int, help="eval minibatch size")
 parser.add_argument('--mem_size', default=10, type=int, help="memory size for ilos replay buffer")
+parser.add_argument('--strat', default='ilos', type=str, help="strategy used for running the experiment")
 
 args = parser.parse_args()
 
