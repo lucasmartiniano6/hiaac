@@ -5,7 +5,7 @@ from numpy import genfromtxt
 
 
 def make_tensors(file_id):
-    path = f'clean/{file_id}.txt'
+    path = f'data/{file_id}.txt'
 
     data = torch.from_numpy(genfromtxt(path))
     

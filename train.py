@@ -35,4 +35,4 @@ class Trainer():
             cl_strategy.train(experience)
             results.append(cl_strategy.eval(benchmark.test_stream))
 
-        torch.save(cl_strategy.model.state_dict(), 'saved_model.pth')
+        torch.save(cl_strategy.model.state_dict(), 'pth/saved_model.pth')
