@@ -1,5 +1,5 @@
 # Data cleanse
-# Excludes 0 activity-Id data and changes any NaN occurence to 0
+# Ignores 0 activity-Id data and changes any NaN occurence to 0
 # Saves everything in data/ folder
 
 import numpy as np
