@@ -25,11 +25,11 @@ def make_tensors(file_id):
 def make_benchmark(args=None):
     n_exp = args.n_exp if args is not None else 1
 
-    train_data, targets = make_tensors('a') 
+    train_data, targets = make_tensors('101') 
     train_data.targets = targets.tolist()
     train_data = make_classification_dataset(train_data)
     
-    test_data, targets = make_tensors('a') 
+    test_data, targets = make_tensors('102') 
     test_data.targets = targets.tolist()
     test_data = make_classification_dataset(test_data)
 
