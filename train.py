@@ -33,6 +33,9 @@ class Trainer():
         for experience in benchmark.train_stream:
             print("EXPERIENCE: ", experience.current_experience)
             print("Current Classes: ", experience.classes_in_this_experience)
+            print('Previous Classes: ', experience.previous_classes)
+            print('Future Classes: ', experience.future_classes)
+            print('Classes seem so far: ', experience.classes_seen_so_far)
 
             cl_strategy.train(experience)
             results.append(cl_strategy.eval(benchmark.test_stream))

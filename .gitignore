@@ -3,3 +3,4 @@ checkpoints/
 .vscode/
 data/*
 !/data/clean.py
+tb_data/

@@ -1,1 +1,1 @@
-python3 runner.py --strat ilos --lr 0.01 --n_exp 3 --epochs 1 --train_mb_size 100 --eval_mb_size 150 --mem_size 50
+python3 runner.py --config config.json

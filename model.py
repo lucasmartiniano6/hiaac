@@ -1,6 +1,6 @@
 import torch
-from avalanche.logging import InteractiveLogger
-from avalanche.evaluation.metrics import accuracy_metrics
+from avalanche.logging import InteractiveLogger, TextLogger, TensorboardLogger
+from avalanche.evaluation.metrics import accuracy_metrics, forgetting_metrics, loss_metrics
 from avalanche.training.plugins import EvaluationPlugin
 from avalanche.training import Naive
 from avalanche.models import SimpleMLP
@@ -17,8 +17,11 @@ def create_strategy(args, check_plugin=None):
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    loggers=[InteractiveLogger(), TextLogger(open('log.txt', 'w')), TensorboardLogger()]
     eval_plugin = EvaluationPlugin(accuracy_metrics(minibatch=True,epoch=True,experience=True,stream=True),
-                                loggers=[InteractiveLogger()])
+                                   forgetting_metrics(experience=True, stream=True),
+                                   loss_metrics(minibatch=True, epoch=True, experience=True, stream=True),
+                                   loggers=loggers)
     plugins = [check_plugin]
 
     cl_strategy = None
