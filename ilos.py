@@ -40,7 +40,7 @@ class Ilos(SupervisedTemplate):
 
         self.args = args
 
-        self.q_herding = 5 # takes q samples of exemplar set as in ilos paper
+        self.q_herding = 10 # takes q samples of exemplar set as in ilos paper
         self.mem_size = args.mem_size
         self.x_memory = []
         self.y_memory = []
@@ -65,11 +65,21 @@ class Ilos(SupervisedTemplate):
 
     def construct_exemplar_set(self):
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-        examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(range(self.q_herding)))
+        subset = make_tensor_classification_dataset(
+            self.mb_x,
+            self.mb_y,
+            transform=None,
+            target_transform=None
+        )
+        examplar_idx = herding.make_sorted_indices(self, self.mb_x)
+        print(examplar_idx)
         mem_left = self.mem_size - len(self.x_memory)
-        for idx in range(min(self.q_herding, mem_left)):
+        cnt = 0
+        for idx in range(min(self.q_herding, mem_left, len(examplar_idx))):
+            cnt += 1
             self.x_memory.append(self.adapted_dataset[examplar_idx[idx]][0])
             self.y_memory.append(self.adapted_dataset[examplar_idx[idx]][1])
+        print('added ', cnt , ' exemplars to memory')
 
     def _before_forward(self, **kwargs):
         self.crit.before_forward(self)

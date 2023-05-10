@@ -1,12 +1,12 @@
 {
     "lr": 0.01,
     "input_size": 51,
-    "total_classes": 25,
+    "total_classes": 100,
     "epochs": 1,
-    "n_exp": 3,
+    "n_exp": 10,
     "train_mb_size": 100,
     "eval_mb_size": 150,
-    "mem_size": 50,
+    "mem_size": 100,
     "strat": "ilos",
 
     "name": "Ilos Strategy",       

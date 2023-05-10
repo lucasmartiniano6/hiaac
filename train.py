@@ -27,7 +27,9 @@ class Trainer():
             cl_strategy = create_strategy(self.args)
 
         print("Creating benchmark...")
-        benchmark = make_benchmark(self.args)
+        from avalanche.benchmarks.classic import SplitCIFAR10
+        benchmark = SplitCIFAR10(n_experiences=self.args.n_exp, shuffle=True, seed=42)
+
         results = []
         print("Strategy: " + self.args.strat)
         for experience in benchmark.train_stream:
