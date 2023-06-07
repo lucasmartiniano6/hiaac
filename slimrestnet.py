@@ -89,12 +89,9 @@ class ResNet(nn.Module):
         return layers
 
     def forward(self, x):
-#        bsz = x.size(0)
-#        vi = x.view(bsz, 3, 32, 32)
-        vi = x
-        if(x.dim() == 3) :
-            vi = vi.unsqueeze(0)
-        out = relu(self.bn1(self.conv1(vi)))
+        if x.dim() == 3:
+            x = x.unsqueeze(0)
+        out = relu(self.bn1(self.conv1(x)))
         out = self.feature_extractor(out)
         out = avg_pool2d(out, 4)
         out = out.view(out.size(0), -1)
@@ -104,5 +101,18 @@ class ResNet(nn.Module):
 
 def SlimResNet18(nclasses, nf=20):
     """Slimmed ResNet18."""
-    model = MLP([2, 2, 2])
     return ResNet(BasicBlock, [2, 2, 2, 2], nclasses, nf)
+
+def main():
+    from avalanche.benchmarks.classic import SplitCIFAR10
+    benchmark = SplitCIFAR10(n_experiences=10, shuffle=True, seed=42)
+    batch = benchmark.train_stream[0].dataset[0]
+    x, y, _ = batch
+
+
+    model = SlimResNet18(10)
+    # x.shape = [3, 32, 32]
+    out = model(x)
+
+if __name__ == '__main__':
+    main()
