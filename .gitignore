@@ -4,3 +4,4 @@ checkpoints/
 data/*
 !/data/clean.py
 tb_data/
+log.txt

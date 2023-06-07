@@ -77,7 +77,9 @@ class ResNetBaseline(nn.Module):
         self.classifier = nn.Linear(mid_channels * 2, num_pred_classes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:  # type: ignore
+        print('\n x shape before ', x.shape)
         x = self.feature_extractor(x)
+        print('\n x shape after ', x.shape)
         return self.classifier(x.mean(dim=-1))
 
 
