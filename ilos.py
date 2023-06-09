@@ -3,6 +3,7 @@ import torch.nn as nn
 import copy
 from avalanche.training.templates import SupervisedTemplate
 from avalanche.training import HerdingSelectionStrategy
+from storage_policy import HerdingSelectionStrategy
 from avalanche.benchmarks.utils import make_tensor_classification_dataset
 from avalanche.benchmarks.utils.utils import concat_datasets
 

@@ -14,8 +14,8 @@ def create_strategy(args, check_plugin=None):
     elif args.strat == 'naive':
         model = SimpleMLP(num_classes=args.total_classes, input_size=args.input_size)
 
-#    from slimrestnet import SlimResNet18
-#    model = SlimResNet18(nclasses=args.total_classes) # CIFAR100
+    from slimrestnet import SlimResNet18
+    model = SlimResNet18(nclasses=args.total_classes) # CIFAR100
     
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 

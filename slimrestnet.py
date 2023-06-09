@@ -109,7 +109,6 @@ def main():
     batch = benchmark.train_stream[0].dataset[0]
     x, y, _ = batch
 
-
     model = SlimResNet18(10)
     # x.shape = [3, 32, 32]
     out = model(x)

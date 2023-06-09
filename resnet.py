@@ -108,14 +108,15 @@ class ResNetBlock(nn.Module):
         return self.layers(x)
 
 
-if __name__ == '__main__':
-    from benchmark import make_tensors
-    torch_data, targets = make_tensors('a')
-    x = torch_data[:3][0]
+def main():
+    from avalanche.benchmarks.classic import SplitCIFAR10
+    benchmark = SplitCIFAR10(n_experiences=10, shuffle=True, seed=42)
+    batch = benchmark.train_stream[0].dataset[0]
+    x, y, _ = batch
 
-    model = ResNetBaseline(in_channels=51, num_pred_classes=25)
-
+    model = ResNetBaseline(in_channels=3, num_pred_classes=10)
     out = model(x)
-    print(out.shape)
-    print(out)
+
+if __name__ == '__main__':
+    main()
 

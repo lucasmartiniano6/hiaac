@@ -33,9 +33,7 @@ class FeatureBasedExemplarsSelectionStrategy(ExemplarsSelectionStrategy, ABC):
         self.feature_extractor = FeatureExtractorBackbone(model, layer_name)
 
     @torch.no_grad()
-    def make_sorted_indices(
-        self, strategy, data: AvalancheDataset
-    ) -> List[int]:
+    def make_sorted_indices(self, strategy, data: AvalancheDataset) -> List[int]:
         self.feature_extractor.eval()
         collate_fn = data.collate_fn if hasattr(data, "collate_fn") else None
         features = cat(
@@ -68,7 +66,10 @@ class HerdingSelectionStrategy(FeatureBasedExemplarsSelectionStrategy):
     """
 
     def make_sorted_indices_from_features(self, features: Tensor) -> List[int]:
-        print(features.shape) # [3, 160, 4, 4]
+        # print(features.shape) # [n, 160, 4, 4]
+        features = features.reshape(features.shape[0], -1) # [n, 160*4*4]
+        # print(features.shape) # [n, 2560]
+
         selected_indices = []
 
         center = features.mean(dim=0) # [160, 4, 4]
@@ -79,7 +80,6 @@ class HerdingSelectionStrategy(FeatureBasedExemplarsSelectionStrategy):
             candidate_centers = current_center * i / (i + 1) + features / ( i + 1) # [3, 160, 4, 4]
             distances = pow(candidate_centers - center, 2).sum(dim=1)
             distances[selected_indices] = inf # [3, 4, 4]
-
             # Select best candidate
             new_index = distances.argmin().tolist() # int
             selected_indices.append(new_index) # list
