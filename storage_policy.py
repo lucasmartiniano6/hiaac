@@ -85,5 +85,5 @@ class HerdingSelectionStrategy(FeatureBasedExemplarsSelectionStrategy):
             selected_indices.append(new_index) # list
             current_center = candidate_centers[new_index]
 
-        print(selected_indices)
+        # print(selected_indices)
         return selected_indices

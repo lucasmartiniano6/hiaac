@@ -6,6 +6,7 @@ from avalanche.training import HerdingSelectionStrategy
 from storage_policy import HerdingSelectionStrategy
 from avalanche.benchmarks.utils import make_tensor_classification_dataset
 from avalanche.benchmarks.utils.utils import concat_datasets
+from avalanche.training.losses import ICaRLLossPlugin
 
 class Ilos(SupervisedTemplate):
     '''
@@ -25,7 +26,9 @@ class Ilos(SupervisedTemplate):
         evaluator = None,
         plugins = None
     ):
-        self.crit = IlosLoss()
+        # self.crit = IlosLoss() # ~10% accuracy
+        self.crit = nn.CrossEntropyLoss() # ~10% accuracy
+        # self.crit = ICaRLLossPlugin()
         
         super().__init__(
             model,
@@ -66,20 +69,23 @@ class Ilos(SupervisedTemplate):
 
     def construct_exemplar_set(self):
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
+        # random_idx = [random(i) for i in range(self.q_herding * 10)]
+        # examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(random_idx))
         examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(range(self.q_herding)))
+        # examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset) # takes too long for same result
         mem_left = self.mem_size - len(self.x_memory)
         cnt = 0
-        for idx in range(min(self.q_herding, mem_left, len(examplar_idx))):
+        for idx in range(min(self.q_herding, mem_left)):
             cnt += 1
             self.x_memory.append(self.adapted_dataset[examplar_idx[idx]][0])
             self.y_memory.append(self.adapted_dataset[examplar_idx[idx]][1])
         print('added ', cnt , ' exemplars to memory')
 
     def _before_forward(self, **kwargs):
-        self.crit.before_forward(self)
+#        self.crit.before_forward(self)
         return super()._before_forward(**kwargs)
     def _after_update(self, **kwargs):
-        self.crit.after_update(self)
+#        self.crit.after_update(self)
         return super()._after_update(**kwargs)
 
 class IlosLoss():

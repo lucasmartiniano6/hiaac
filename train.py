@@ -39,7 +39,9 @@ class Trainer():
             print('Future Classes: ', experience.future_classes)
             print('Classes seem so far: ', experience.classes_seen_so_far)
 
+            len(experience.dataset)
             cl_strategy.train(experience)
             results.append(cl_strategy.eval(benchmark.test_stream))
+
 
         torch.save(cl_strategy.model.state_dict(), 'pth/saved_model.pth')

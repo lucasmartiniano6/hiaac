@@ -2,22 +2,19 @@ import torch
 from avalanche.logging import InteractiveLogger, TextLogger, TensorboardLogger
 from avalanche.evaluation.metrics import accuracy_metrics, forgetting_metrics, loss_metrics
 from avalanche.training.plugins import EvaluationPlugin
-from avalanche.training import Naive
-from avalanche.models import SimpleMLP
-from resnet import ResNetBaseline
+from avalanche.training import Naive, GEM
 from ilos import Ilos
 
 def create_strategy(args, check_plugin=None):
     model : torch.nn.Module = None
     if args.strat == 'ilos':
-        model = ResNetBaseline(in_channels=args.input_size, num_pred_classes=args.total_classes)
+        from slimrestnet import SlimResNet18
+        model = SlimResNet18(nclasses=args.total_classes) # CIFAR10
     elif args.strat == 'naive':
-        model = SimpleMLP(num_classes=args.total_classes, input_size=args.input_size)
+        from avalanche.models import SlimResNet18
+        model = SlimResNet18(nclasses=args.total_classes) # CIFAR10
 
-    from slimrestnet import SlimResNet18
-    model = SlimResNet18(nclasses=args.total_classes) # CIFAR100
-    
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-5)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     loggers=[InteractiveLogger(), TextLogger(open('log.txt', 'w')), TensorboardLogger()]
@@ -39,6 +36,7 @@ def create_strategy(args, check_plugin=None):
             train_mb_size=args.train_mb_size, eval_mb_size=args.eval_mb_size, train_epochs=args.epochs,
             evaluator=eval_plugin, plugins=plugins
         )
+    
     return cl_strategy
 
 if __name__ == '__main__':
