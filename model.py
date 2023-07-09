@@ -17,7 +17,7 @@ def create_strategy(args, check_plugin=None):
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-5)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    loggers=[InteractiveLogger(), TextLogger(open('log.txt', 'w')), TensorboardLogger()]
+    loggers=[InteractiveLogger(), TextLogger(open('results/log.txt', 'w')), TensorboardLogger()]
     eval_plugin = EvaluationPlugin(accuracy_metrics(minibatch=True,epoch=True,experience=True,stream=True),
                                    forgetting_metrics(experience=True, stream=True),
                                    loss_metrics(minibatch=True, epoch=True, experience=True, stream=True),

@@ -69,9 +69,10 @@ class Ilos(SupervisedTemplate):
 
     def construct_exemplar_set(self):
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-        # random_idx = [random(i) for i in range(self.q_herding * 10)]
-        # examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(random_idx))
-        examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(range(self.q_herding)))
+        import random
+        random_idx = random.sample(range(len(self.adapted_dataset)), self.q_herding)
+        examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(random_idx))
+        # examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset.subset(range(self.q_herding)))
         # examplar_idx = herding.make_sorted_indices(self, self.adapted_dataset) # takes too long for same result
         mem_left = self.mem_size - len(self.x_memory)
         cnt = 0
