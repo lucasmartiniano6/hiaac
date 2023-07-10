@@ -53,5 +53,18 @@ def main():
             print(inputs.shape)
         print("\n------")
 
+
+def loss_fn(outputs, labels):
+    seen = [0,1,2,3,4]
+    labels = torch.tensor([5,6,7,8,9])
+
+
+    seen = torch.tensor(seen)
+    both = torch.cat((seen, labels), 0)
+    print(both)
+    p = outputs[:, both]
+    print(outputs[1])
+    print(p)
+
 if __name__ == '__main__':
-    main()
+    loss_fn(torch.rand(8, 100), torch.randint(0, 100, (8,)))
