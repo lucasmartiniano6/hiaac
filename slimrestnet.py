@@ -99,9 +99,9 @@ class ResNet(nn.Module):
         return out
 
 
-def SlimResNet18(nclasses, nf=20):
+def SlimResNet34(nclasses, nf=20):
     """Slimmed ResNet18."""
-    return ResNet(BasicBlock, [2, 2, 2, 2], nclasses, nf)
+    return ResNet(BasicBlock, [3, 4, 6, 3], nclasses, nf)
 
 def main():
     from avalanche.benchmarks.classic import SplitCIFAR10
@@ -109,9 +109,10 @@ def main():
     batch = benchmark.train_stream[0].dataset[0]
     x, y, _ = batch
 
-    model = SlimResNet18(10)
+    model = SlimResNet34(10)
     # x.shape = [3, 32, 32]
     out = model(x)
+    print(model)
 
 if __name__ == '__main__':
     main()

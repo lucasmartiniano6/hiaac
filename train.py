@@ -2,7 +2,7 @@ from avalanche.training.determinism.rng_manager import RNGManager
 from avalanche.training.plugins.checkpoint import CheckpointPlugin, FileSystemCheckpointStorage
 import torch
 from model import create_strategy
-from benchmark import make_benchmark
+from avalanche.benchmarks.classic import SplitCIFAR100
 
 class Trainer():
     """
@@ -27,22 +27,17 @@ class Trainer():
             cl_strategy = create_strategy(self.args)
 
         print("Creating benchmark...")
-        from avalanche.benchmarks.classic import SplitCIFAR100
         benchmark = SplitCIFAR100(n_experiences=self.args.n_exp, shuffle=True, seed=42)
-        print('train ', len(benchmark.train_stream))
-        print('test ', len(benchmark.test_stream))
 
-        results = []
         print("Strategy: " + self.args.strat)
         for experience in benchmark.train_stream:
             print("EXPERIENCE: ", experience.current_experience)
             print("Current Classes: ", experience.classes_in_this_experience)
-            print('Previous Classes: ', experience.previous_classes)
-            print('Future Classes: ', experience.future_classes)
+#            print('Previous Classes: ', experience.previous_classes)
+#            print('Future Classes: ', experience.future_classes)
 
             cl_strategy.train(experience)
             # eval only in previously trained classes
-            results.append(cl_strategy.eval(benchmark.test_stream[:experience.current_experience+1]))
-
+            cl_strategy.eval(benchmark.test_stream[:experience.current_experience+1])
 
         torch.save(cl_strategy.model.state_dict(), 'pth/saved_model.pth')
