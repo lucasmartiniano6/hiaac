@@ -1,5 +1,3 @@
-from avalanche.training.determinism.rng_manager import RNGManager
-from avalanche.training.plugins.checkpoint import CheckpointPlugin, FileSystemCheckpointStorage
 import torch
 from model import create_strategy
 from avalanche.benchmarks.classic import SplitCIFAR100
@@ -14,17 +12,7 @@ class Trainer():
         self.train()
 
     def train(self):
-        RNGManager.set_random_seeds(42)
-        check_plugin = CheckpointPlugin(
-        FileSystemCheckpointStorage(
-            directory='./checkpoints/'
-            ),
-            map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
-        )
-        cl_strategy, initial_exp = check_plugin.load_checkpoint_if_exists()    
-
-        if cl_strategy is None:
-            cl_strategy = create_strategy(self.args)
+        cl_strategy = create_strategy(self.args)
 
         print("Creating benchmark...")
         benchmark = SplitCIFAR100(n_experiences=self.args.n_exp, shuffle=True, seed=42)
