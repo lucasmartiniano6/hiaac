@@ -1,10 +1,11 @@
 import torch
 from torch.utils.data.dataset import TensorDataset
-from avalanche.benchmarks.utils.data_loader import ReplayDataLoader
+from avalanche.benchmarks.utils.data_loader import ReplayDataLoader, GroupBalancedDataLoader
 from avalanche.training.storage_policy import ParametricBuffer, RandomExemplarsSelectionStrategy
 from types import SimpleNamespace
 from itertools import islice 
 from tqdm import tqdm
+from torch.utils .tensorboard import SummaryWriter
 
 class Strategy:
     def __init__(
@@ -14,7 +15,10 @@ class Strategy:
         args,
         device,
     ):
-        self.criterion = torch.nn.CrossEntropyLoss() 
+        self.CE = torch.nn.CrossEntropyLoss() 
+        self.Mod_CD = CustomLoss()
+
+        self.criterion = self.CE
 
         self.model = model
         self.optimizer = optimizer
@@ -24,12 +28,17 @@ class Strategy:
         self.mem_size = args.mem_size
 
         self.old_classes = None
+        self.curr_classes = None
 
         self.exemplar_set = ParametricBuffer(
             max_size=self.args.mem_size, 
             groupby='class',
             selection_strategy=RandomExemplarsSelectionStrategy()
         )
+
+        self.writer = SummaryWriter('tb_data/ilos')
+        self.training_loss = 0.0
+        self.global_step = 0
     
  
     def batched(self, iterable, n):
@@ -46,11 +55,7 @@ class Strategy:
         # print(f"Max buffer size: {self.exemplar_set.max_size}, current size: {len(self.exemplar_set.buffer)}")
         # print(*sorted(self.exemplar_set.buffer.targets))
 
-    def _train_batch(self, batch):
-        inputs, labels, *_ = zip(*batch)
-        inputs = torch.stack(inputs)
-        labels = torch.tensor(labels)
-
+    def _train_batch(self, inputs, labels):
         inputs = inputs.to(self.device)
         labels = labels.to(self.device)
 
@@ -60,39 +65,80 @@ class Strategy:
         loss.backward()
         self.optimizer.step()
 
-        curr_classes = torch.cat((self.old_classes, labels), 0) if self.old_classes is not None else labels
-        self.old_classes = torch.unique(curr_classes)
+        self.curr_classes = torch.cat((self.old_classes, labels), 0) if self.old_classes is not None else labels
+        self.curr_classes = torch.unique(self.curr_classes)
+
+        self.training_loss += loss.item()
+        self.global_step += 1
+        self.writer.add_scalar('Loss/train', self.training_loss, self.global_step)        
+
 
     def train(self, experience):
         self.model.train() 
         data = experience.dataset
         if(len(self.exemplar_set.buffer) != 0):
             print("Using exemplar set...")
-            dataLoader = ReplayDataLoader( # slow
-                experience.dataset,
-                self.exemplar_set.buffer,
-                batch_size=self.args.train_mb_size,
-                oversample_small_tasks=True
-            )
-            data = dataLoader.data
+            print("Exemplar set: ", *set(sorted(self.exemplar_set.buffer.targets)))
+            buf = [v.buffer for v in self.exemplar_set.buffer_groups.values()]
+            buf.append(experience.dataset)
+            dataLoader = GroupBalancedDataLoader( # slow
+                buf,
+                batch_size=100, #TODO CHANGE
+                oversample_small_groups=False
+            ) # TODO: BUFFER NO BALANCING WITH PREVIOUS CLASSES data = dataLoader.data
+            data = dataLoader
+            my_targets = set()
+            size_dl = 0
+            for _, y, *_ in dataLoader:
+                my_targets.update(y.tolist())
+                size_dl += len(y)
+            print("Data Group: ", *set(sorted(my_targets)))
+            print("Size of dataLoader: ", size_dl)
         for epoch in range(self.args.epochs):
             # two-step learning
-            for batch in tqdm(self.batched(experience.dataset, self.args.train_mb_size)):
-                # Red dot - Modified Cross-Distillation Loss
-                if experience.current_experience > 0:
-                    self.criterion = CustomLoss(self.old_classes)
-                    self._train_batch(batch)
-            for batch in tqdm(self.batched(data, self.args.train_mb_size)):
-                # Black dot - Cross-Entropy Loss
-                self.criterion = torch.nn.CrossEntropyLoss()
-                self._train_batch(batch)
+            mb_size = self.args.train_mb_size
+            if experience.current_experience > 0:
+                steps = zip(self.batched(experience.dataset, mb_size), data)
+                i = 0
+                for batch_red, batch_balanced in tqdm(steps):
+                    # Red dot - Modified Cross-Distillation Loss
+                    self.Mod_CD.set_old_classes(self.old_classes)
+                    self.criterion = self.Mod_CD 
+                    inputs, labels, *_ = zip(*batch_red)
+                    inputs = torch.stack(inputs)
+                    labels = torch.tensor(labels)
+                    self._train_batch(inputs, labels)
+
+                    # Black dot - Cross-Entropy Loss
+                    self.criterion = self.CE 
+                    inputs, labels, *_ = batch_balanced 
+                    self._train_batch(inputs, labels)
+
+                    i+=1
+                    if experience.current_experience == 1 and (i == 5 or i == 10 or i== 15):
+                        print(f'\nBatch balanced at {i}it: ', labels)
+                        torch.save(self.model.state_dict(), 'pth/saved_model.pth')
+                        if(i == 15):
+                            pass
+            else:
+                for batch in tqdm(self.batched(experience.dataset, mb_size)):
+                    inputs, labels, *_ = zip(*batch)
+                    inputs = torch.stack(inputs)
+                    labels = torch.tensor(labels)
+                    self.criterion = self.CE
+                    self._train_batch(inputs, labels)
+
         print("Updating exemplar set...")
         self.exemplar_set.update(SimpleNamespace(experience=experience))
+        self.old_classes = self.curr_classes
+        torch.save(self.model.state_dict(), 'pth/saved_model.pth')
+
 
     def eval(self, test_stream):
         with torch.no_grad():
             for exp in test_stream:
                 total, correct = 0, 0
+                step = 0
                 for batch in self.batched(exp.dataset, self.args.eval_mb_size):
                     inputs, labels, _ = zip(*batch)
                     inputs = torch.stack(inputs)
@@ -105,14 +151,17 @@ class Strategy:
                     _, predicted = torch.max(outputs.data, 1)
                     total += labels.size(0)
                     correct += (predicted == labels).sum().item()
+                            
+                    self.writer.add_scalar(f'Accuracy/Exp{exp.current_experience}', correct/total, step)
+                    step += 1
 
                 accuracy = 100 * correct / total 
                 print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
 
 class CustomLoss:
     # Modified Cross-Distillation Loss
-    def __init__(self, old_classes):
-        self.old_classes = old_classes
+    def __init__(self):
+        self.old_classes = None
         self.temperature = 2.0
         self.alpha = 0.5
         self.beta = 0.5
@@ -158,3 +207,6 @@ class CustomLoss:
         # print('curr classes', curr_classes)
 
         return loss
+    
+    def set_old_classes(self, old_classes):
+        self.old_classes = old_classes
