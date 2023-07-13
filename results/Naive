@@ -1,9 +1,0 @@
-(train: 101, test: 108) = accuracy 0.0908
-    CPU Time = 2m39s
-    lr=0.001, momentum=0.9
-    data with NaN is being replaced by 0
-
-(train: 101+102+103+104, test: 108) = accuracy 0.1202
-    CPU Time = 9m44s
-    lr=0.001, momentum=0.9
-    data with NaN is being replaced by 0
