@@ -1,7 +1,8 @@
 import torch
 from torch.utils.data.dataset import TensorDataset
 from avalanche.benchmarks.utils.data_loader import ReplayDataLoader, GroupBalancedDataLoader
-from avalanche.training.storage_policy import ParametricBuffer, RandomExemplarsSelectionStrategy
+from avalanche.training.storage_policy import ParametricBuffer, RandomExemplarsSelectionStrategy, ClosestToCenterSelectionStrategy 
+from storage_policy import HerdingSelectionStrategy
 from types import SimpleNamespace
 from itertools import islice 
 from tqdm import tqdm
@@ -24,7 +25,6 @@ class Strategy:
         self.optimizer = optimizer
         self.device = device
         self.args = args
-        self.q_herding = 5 # takes q samples of exemplar set as in ilos paper
         self.mem_size = args.mem_size
 
         self.old_classes = None
@@ -33,7 +33,7 @@ class Strategy:
         self.exemplar_set = ParametricBuffer(
             max_size=self.args.mem_size, 
             groupby='class',
-            selection_strategy=RandomExemplarsSelectionStrategy()
+            selection_strategy=HerdingSelectionStrategy(self.model, 'feature_extractor')
         )
 
         self.writer = SummaryWriter('tb_data/ilos')
@@ -128,7 +128,11 @@ class Strategy:
                     self._train_batch(inputs, labels)
 
         print("Updating exemplar set...")
-        self.exemplar_set.update(SimpleNamespace(experience=experience))
+        self.exemplar_set.update(SimpleNamespace(
+            experience=experience,
+            device = self.device,
+            eval_mb_size=self.args.eval_mb_size
+        ))
         self.old_classes = self.curr_classes
         torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
