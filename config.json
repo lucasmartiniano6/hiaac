@@ -4,9 +4,9 @@
     "total_classes": 100,
     "epochs": 1,
     "n_exp": 20,
-    "train_mb_size": 8,
-    "eval_mb_size": 8,
-    "mem_size": 2000,
+    "train_mb_size": 100,
+    "eval_mb_size": 100,
+    "mem_size": 2500,
     "strat": "ilos",
 
     "name": "Ilos Strategy",       
