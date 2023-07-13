@@ -1,11 +1,6 @@
 import torch
-from avalanche.logging import InteractiveLogger, TextLogger, TensorboardLogger
-from avalanche.evaluation.metrics import accuracy_metrics, forgetting_metrics, loss_metrics
-from avalanche.training.plugins import EvaluationPlugin
-from avalanche.training import Naive, GEM
 from strategy import Strategy
 from slimrestnet import SlimResNet34
-from ilos import Ilos
 
 def create_strategy(args, check_plugin=None):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
