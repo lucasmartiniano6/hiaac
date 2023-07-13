@@ -1,0 +1,6 @@
+new data contains: new classes and new observations of old classes
+
+for exp in experience:
+    for batch in exp:
+        faz o two-step learning (que agora contem as classes novas e atuais)
+    update do exemplar set com a experience (que agora contem as classes qe vao ser consideradas antigas)

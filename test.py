@@ -17,7 +17,7 @@ def test_replay():
     benchmark = SplitCIFAR100(n_experiences=20, seed=42)
 
     exemplar_set = ParametricBuffer(
-        max_size=100,
+        max_size=1000,
         groupby='class',
         selection_strategy=RandomExemplarsSelectionStrategy()
     )

@@ -75,30 +75,31 @@ class Strategy:
 
     def train(self, experience):
         self.model.train() 
-        data = experience.dataset
         if(len(self.exemplar_set.buffer) != 0):
             print("Using exemplar set...")
             print("Exemplar set: ", *set(sorted(self.exemplar_set.buffer.targets)))
-            buf = [v.buffer for v in self.exemplar_set.buffer_groups.values()]
-            buf.append(experience.dataset)
+            # buf = [v.buffer for v in self.exemplar_set.buffer_groups.values()]
+            buf = [self.exemplar_set.buffer, experience.dataset]
             dataLoader = GroupBalancedDataLoader( # slow
                 buf,
                 batch_size=100, #TODO CHANGE
                 oversample_small_groups=False
             ) # TODO: BUFFER NO BALANCING WITH PREVIOUS CLASSES data = dataLoader.data
-            data = dataLoader
-            my_targets = set()
-            size_dl = 0
-            for _, y, *_ in dataLoader:
-                my_targets.update(y.tolist())
-                size_dl += len(y)
-            print("Data Group: ", *set(sorted(my_targets)))
-            print("Size of dataLoader: ", size_dl)
+            dl_groups = {}
+            for x, y, *_ in dataLoader:
+                for target in y.tolist():
+                    if target not in dl_groups.keys():
+                        dl_groups[target] = 1
+                    else:
+                        dl_groups[target] += 1
+            dl_groups = {k: v for k, v in sorted(dl_groups.items(), key=lambda item: item[1])} 
+            print(dl_groups)
+            print('Size of balanced', sum(dl_groups.values()))
         for epoch in range(self.args.epochs):
-            # two-step learning
             mb_size = self.args.train_mb_size
             if experience.current_experience > 0:
-                steps = zip(self.batched(experience.dataset, mb_size), data)
+                # two-step learning
+                steps = zip(self.batched(experience.dataset, mb_size), dataLoader)
                 i = 0
                 for batch_red, batch_balanced in tqdm(steps):
                     # Red dot - Modified Cross-Distillation Loss
@@ -109,17 +110,15 @@ class Strategy:
                     labels = torch.tensor(labels)
                     self._train_batch(inputs, labels)
 
+                    i += labels.shape[0]
+
                     # Black dot - Cross-Entropy Loss
                     self.criterion = self.CE 
                     inputs, labels, *_ = batch_balanced 
                     self._train_batch(inputs, labels)
 
-                    i+=1
-                    if experience.current_experience == 1 and (i == 5 or i == 10 or i== 15):
-                        print(f'\nBatch balanced at {i}it: ', labels)
-                        torch.save(self.model.state_dict(), 'pth/saved_model.pth')
-                        if(i == 15):
-                            pass
+                    i += labels.shape[0]
+                print("Trained on ", i, "samples")
             else:
                 for batch in tqdm(self.batched(experience.dataset, mb_size)):
                     inputs, labels, *_ = zip(*batch)
