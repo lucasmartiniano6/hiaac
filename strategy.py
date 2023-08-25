@@ -6,7 +6,24 @@ from storage_policy import HerdingSelectionStrategy
 from types import SimpleNamespace
 from itertools import islice 
 from tqdm import tqdm
-from torch.utils .tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
+
+# TODO:
+# pra atualizar o exemplar set:
+# fazer a cada experiência 
+# q é o número de exemplares por classe (constante)
+# q * old_classes = tamanho do exemplar set
+
+# primeira experiencia:
+#     exemplar set = 0
+#     ce loss normal
+# atualiza exemplar set (herding selection)
+# segunda experiencia:
+#     exemplar set != 0
+#     classes novas -> ce loss modificado
+#     misturar (exemplar set\ciclado + classes novas) -> ce loss normal
+# atualiza exemplar set (algoritmo1 NCM)
+# (...)
 
 class Strategy:
     def __init__(
