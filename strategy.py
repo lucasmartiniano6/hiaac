@@ -165,6 +165,8 @@ class Strategy:
 
                 accuracy = 100 * correct / total 
                 print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
+                with open("res.txt", "a") as f:
+                    f.write(f'{accuracy:.2f} ')
 
 class CustomLoss:
     # Modified Cross-Distillation Loss
