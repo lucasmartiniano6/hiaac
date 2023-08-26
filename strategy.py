@@ -4,8 +4,9 @@ from avalanche.benchmarks.utils.data_loader import ReplayDataLoader, GroupBalanc
 from avalanche.training.storage_policy import ParametricBuffer, RandomExemplarsSelectionStrategy, ClosestToCenterSelectionStrategy 
 from storage_policy import HerdingSelectionStrategy
 from types import SimpleNamespace
-from itertools import islice 
+import itertools
 from tqdm import tqdm
+import random
 from torch.utils.tensorboard import SummaryWriter
 
 # TODO:
@@ -47,11 +48,8 @@ class Strategy:
         self.old_classes = None
         self.curr_classes = None
 
-        self.exemplar_set = ParametricBuffer(
-            max_size=self.args.mem_size, 
-            groupby='class',
-            selection_strategy=HerdingSelectionStrategy(self.model, 'feature_extractor')
-        )
+        self.exemplar = []
+        self.q = 8 # exemplars per class
 
         self.writer = SummaryWriter('tb_data/ilos')
         self.training_loss = 0.0
@@ -60,17 +58,8 @@ class Strategy:
  
     def batched(self, iterable, n):
         it = iter(iterable)
-        while batch := tuple(islice(it, n)):
+        while batch := tuple(itertools.islice(it, n)):
             yield batch
-
-    def update_exemplars(self, inputs, labels):
-        # Update exemplar set with data from batch
-        exp = SimpleNamespace(dataset=TensorDataset(inputs, labels))
-        exp.dataset.targets = labels.tolist()
-
-        self.exemplar_set.update(SimpleNamespace(experience=exp))
-        # print(f"Max buffer size: {self.exemplar_set.max_size}, current size: {len(self.exemplar_set.buffer)}")
-        # print(*sorted(self.exemplar_set.buffer.targets))
 
     def _train_batch(self, inputs, labels):
         inputs = inputs.to(self.device)
@@ -89,69 +78,62 @@ class Strategy:
         self.global_step += 1
         self.writer.add_scalar('Loss/train', self.training_loss, self.global_step)        
 
-
     def train(self, experience):
         self.model.train() 
-        if(len(self.exemplar_set.buffer) != 0):
-            print("Using exemplar set...")
-            print("Exemplar set: ", *set(sorted(self.exemplar_set.buffer.targets)))
-            # buf = [v.buffer for v in self.exemplar_set.buffer_groups.values()]
-            buf = [self.exemplar_set.buffer, experience.dataset]
-            dataLoader = GroupBalancedDataLoader( # slow
-                buf,
-                batch_size=100, #TODO CHANGE
-                oversample_small_groups=False
-            ) # TODO: BUFFER NO BALANCING WITH PREVIOUS CLASSES data = dataLoader.data
+        self.exp = experience
+        if(len(self.exemplar) != 0):
             dl_groups = {}
-            for x, y, *_ in dataLoader:
-                for target in y.tolist():
-                    if target not in dl_groups.keys():
-                        dl_groups[target] = 1
-                    else:
-                        dl_groups[target] += 1
-            dl_groups = {k: v for k, v in sorted(dl_groups.items(), key=lambda item: item[1])} 
-            print(dl_groups)
-            print('Size of balanced', sum(dl_groups.values()))
+            for i in self.exemplar:
+                dl_groups[i[1]] = dl_groups.get(i[1], 0) + 1
+            print("Exemplar set: ", dl_groups)
         for epoch in range(self.args.epochs):
             mb_size = self.args.train_mb_size
             if experience.current_experience > 0:
                 # two-step learning
-                steps = zip(self.batched(experience.dataset, mb_size), dataLoader)
-                i = 0
-                for batch_red, batch_balanced in tqdm(steps):
+                steps = zip(self.batched(self.exp.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
+                for batch_red, batch_black in tqdm(steps): 
                     # Red dot - Modified Cross-Distillation Loss
                     self.Mod_CD.set_old_classes(self.old_classes)
                     self.criterion = self.Mod_CD 
-                    inputs, labels, *_ = zip(*batch_red)
-                    inputs = torch.stack(inputs)
-                    labels = torch.tensor(labels)
-                    self._train_batch(inputs, labels)
-
-                    i += labels.shape[0]
+                    inputs_red, labels_red, *_ = zip(*batch_red)
+                    inputs_red = torch.stack(inputs_red)
+                    labels_red = torch.tensor(labels_red)
+                    self._train_batch(inputs_red, labels_red)
 
                     # Black dot - Cross-Entropy Loss
                     self.criterion = self.CE 
-                    inputs, labels, *_ = batch_balanced 
-                    self._train_batch(inputs, labels)
-
-                    i += labels.shape[0]
-                print("Trained on ", i, "samples")
+                    inputs_black, labels_black, *_ = zip(*batch_black)
+                    inputs_black = torch.stack(inputs_black)
+                    labels_black = torch.tensor(labels_black)
+                    # print('black: ', inputs_black.shape, labels_black.shape)
+                
+                    inputs_balanced = torch.cat((inputs_red, inputs_black), 0)
+                    labels_balanced = torch.cat((labels_red, labels_black), 0)
+                    self._train_batch(inputs_balanced, labels_balanced)
+                    # print('red+black: ', inputs_balanced.shape, labels_balanced.shape)
+                # update exemplar set with NCM
+                # for now lets put random samples
+                exemplar_idx = random.sample(range(len(self.exp.dataset)), self.q)
+                for i in exemplar_idx:
+                    self.exemplar.append(self.exp.dataset[i])
             else:
-                for batch in tqdm(self.batched(experience.dataset, mb_size)):
+                for batch in tqdm(self.batched(self.exp.dataset, mb_size)):
                     inputs, labels, *_ = zip(*batch)
-                    inputs = torch.stack(inputs)
-                    labels = torch.tensor(labels)
+                    inputs = torch.stack(inputs) # 8, 3, 32, 32
+                    labels = torch.tensor(labels) # 8 
+
                     self.criterion = self.CE
                     self._train_batch(inputs, labels)
+                # update exemplar set herding selection
+                # examplar_idx = herding.make_sorted_indices(exp.dataset)
+                # for now lets put random samples
+                exemplar_idx = random.sample(range(len(self.exp.dataset)), self.q)
+                for i in exemplar_idx:
+                    self.exemplar.append(self.exp.dataset[i])                
 
         print("Updating exemplar set...")
-        self.exemplar_set.update(SimpleNamespace(
-            experience=experience,
-            device = self.device,
-            eval_mb_size=self.args.eval_mb_size
-        ))
         self.old_classes = self.curr_classes
-        torch.save(self.model.state_dict(), 'pth/saved_model.pth')
+        # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
     def eval(self, test_stream):
