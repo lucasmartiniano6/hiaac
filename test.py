@@ -29,9 +29,7 @@ def scratch():
                     labels = torch.tensor(labels) # 8 
                     # TRAIN
             print(*set(exp.dataset.targets))
-            # update exemplar set herding selection
-            # examplar_idx = herding.make_sorted_indices(exp.dataset)
-            # for now lets put random samples
+            # update herding
             exemplar_idx = random.sample(range(len(exp.dataset)), q)
             for i in exemplar_idx:
                 exemplar.append(exp.dataset[i])
@@ -55,7 +53,6 @@ def scratch():
                 labels_balanced = torch.cat((labels_red, labels_black), 0)
                 # print('red+black: ', inputs_balanced.shape, labels_balanced.shape)
             # update exemplar set with NCM
-            # for now lets put random samples
             exemplar_idx = random.sample(range(len(exp.dataset)), q)
             for i in exemplar_idx:
                 exemplar.append(exp.dataset[i])
