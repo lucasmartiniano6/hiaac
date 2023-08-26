@@ -144,6 +144,7 @@ class Strategy:
 
     def eval(self, test_stream):
         with torch.no_grad():
+            mean_acc = 0.0
             for exp in test_stream:
                 total, correct = 0, 0
                 step = 0
@@ -165,8 +166,10 @@ class Strategy:
 
                 accuracy = 100 * correct / total 
                 print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
-                with open("res.txt", "a") as f:
-                    f.write(f'{accuracy:.2f} ')
+                mean_acc += accuracy
+            mean_acc /= len(test_stream)
+            with open("res.txt", "a") as f:
+                f.write(f'{mean_acc:.2f} ')
 
 class CustomLoss:
     # Modified Cross-Distillation Loss
