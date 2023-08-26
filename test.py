@@ -35,6 +35,7 @@ def scratch():
             exemplar_idx = random.sample(range(len(exp.dataset)), q)
             for i in exemplar_idx:
                 exemplar.append(exp.dataset[i])
+
         elif exp.current_experience > 0:
             # two-step learning
             for batch_red, batch_black in zip(batched(exp.dataset, 8), batched(itertools.cycle(exemplar), 8)):

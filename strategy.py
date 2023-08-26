@@ -1,9 +1,5 @@
 import torch
-from torch.utils.data.dataset import TensorDataset
-from avalanche.benchmarks.utils.data_loader import ReplayDataLoader, GroupBalancedDataLoader
-from avalanche.training.storage_policy import ParametricBuffer, RandomExemplarsSelectionStrategy, ClosestToCenterSelectionStrategy 
 from storage_policy import HerdingSelectionStrategy
-from types import SimpleNamespace
 import itertools
 from tqdm import tqdm
 import random
@@ -34,6 +30,8 @@ class Strategy:
         args,
         device,
     ):
+        torch.manual_seed(42)
+        random.seed(42)
         self.CE = torch.nn.CrossEntropyLoss() 
         self.Mod_CD = CustomLoss()
 
@@ -43,7 +41,7 @@ class Strategy:
         self.optimizer = optimizer
         self.device = device
         self.args = args
-        self.mem_size = args.mem_size
+        self.eval_mb_size = args.eval_mb_size
 
         self.old_classes = None
         self.curr_classes = None
@@ -80,7 +78,7 @@ class Strategy:
 
     def train(self, experience):
         self.model.train() 
-        self.exp = experience
+        self.experience = experience
         if(len(self.exemplar) != 0):
             dl_groups = {}
             for i in self.exemplar:
@@ -90,7 +88,7 @@ class Strategy:
             mb_size = self.args.train_mb_size
             if experience.current_experience > 0:
                 # two-step learning
-                steps = zip(self.batched(self.exp.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
+                steps = zip(self.batched(self.experience.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
                 for batch_red, batch_black in tqdm(steps): 
                     # Red dot - Modified Cross-Distillation Loss
                     self.Mod_CD.set_old_classes(self.old_classes)
@@ -105,19 +103,17 @@ class Strategy:
                     inputs_black, labels_black, *_ = zip(*batch_black)
                     inputs_black = torch.stack(inputs_black)
                     labels_black = torch.tensor(labels_black)
-                    # print('black: ', inputs_black.shape, labels_black.shape)
                 
                     inputs_balanced = torch.cat((inputs_red, inputs_black), 0)
                     labels_balanced = torch.cat((labels_red, labels_black), 0)
                     self._train_batch(inputs_balanced, labels_balanced)
-                    # print('red+black: ', inputs_balanced.shape, labels_balanced.shape)
                 # update exemplar set with NCM
                 # for now lets put random samples
-                exemplar_idx = random.sample(range(len(self.exp.dataset)), self.q)
+                exemplar_idx = random.sample(range(len(self.experience.dataset)), self.q)
                 for i in exemplar_idx:
-                    self.exemplar.append(self.exp.dataset[i])
+                    self.exemplar.append(self.experience.dataset[i])
             else:
-                for batch in tqdm(self.batched(self.exp.dataset, mb_size)):
+                for batch in tqdm(self.batched(self.experience.dataset, mb_size)):
                     inputs, labels, *_ = zip(*batch)
                     inputs = torch.stack(inputs) # 8, 3, 32, 32
                     labels = torch.tensor(labels) # 8 
@@ -125,15 +121,16 @@ class Strategy:
                     self.criterion = self.CE
                     self._train_batch(inputs, labels)
                 # update exemplar set herding selection
-                # examplar_idx = herding.make_sorted_indices(exp.dataset)
-                # for now lets put random samples
-                exemplar_idx = random.sample(range(len(self.exp.dataset)), self.q)
+                herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
+                examplar_idx = herding.make_sorted_indices(self, self.experience.dataset)
+                print(len(exemplar_idx))
+                print(exemplar_idx)
                 for i in exemplar_idx:
-                    self.exemplar.append(self.exp.dataset[i])                
+                    self.exemplar.append(self.experience.dataset[i])                
 
-        print("Updating exemplar set...")
-        self.old_classes = self.curr_classes
-        # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
+            print("Updating exemplar set...")
+            self.old_classes = self.curr_classes
+            # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
     def eval(self, test_stream):

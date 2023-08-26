@@ -16,6 +16,7 @@ class Trainer():
 
         print("Creating benchmark...")
         benchmark = SplitCIFAR100(n_experiences=self.args.n_exp, shuffle=True, seed=42)
+        torch.manual_seed(42)
 
         print("Strategy: " + self.args.strat)
         for experience in benchmark.train_stream:
