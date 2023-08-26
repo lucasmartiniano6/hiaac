@@ -168,6 +168,8 @@ class Strategy:
                 print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
                 mean_acc += accuracy
             mean_acc /= len(test_stream)
+            if len(test_stream) == 1:
+                open('res.txt', 'w').close()
             with open("res.txt", "a") as f:
                 f.write(f'{mean_acc:.2f} ')
 
