@@ -1,9 +1,12 @@
 import torch
 from avalanche.benchmarks.classic import SplitCIFAR100
-from avalanche.benchmarks.utils import AvalancheDataset
 import matplotlib.pyplot as plt
 import itertools
 import random
+import torch.nn.functional as F
+from torch.nn.functional import relu, avg_pool2d
+from torch import nn 
+
  
 def batched(iterable, n):
     it = iter(iterable)
@@ -51,70 +54,14 @@ def scratch():
             exemplar_idx = random.sample(range(len(exp.dataset)), q)
             for i in exemplar_idx:
                 exemplar.append(exp.dataset[i])
- 
-import torch.nn.functional as F
+
 def main():
-    import torch
-    import torchvision
-    import tarfile
-    import torch.nn as nn
-    import numpy as np
-    #from torchvision.datasets.utils import download_url
-    from torchvision.datasets import CIFAR100
-    #from torchvision.datasets import ImageFolder
     from torch.utils.data import DataLoader
-    import torchvision.transforms as tt
-    from torch.utils.data import random_split
-    from torchvision.utils import make_grid
-    import matplotlib
-    import os
-    import matplotlib.pyplot as plt
-
-    project_name='resnet-practice-cifar100-resnet' 
-    from torchvision.datasets.utils import download_url
-    # Dowload the dataset
-    dataset_url = "https://s3.amazonaws.com/fast-ai-imageclas/cifar100.tgz"
-    download_url(dataset_url, '.')
-
-    # Extract from archive
-    with tarfile.open('./cifar100.tgz', 'r:gz') as tar:
-        tar.extractall(path='./data')
-        
-    # Look into the data directory
-    data_dir = './data/cifar100'
-    print(os.listdir(data_dir))
-    classes = os.listdir(data_dir + "/train")
-    print(classes)
- 
-    # Data transforms (normalization & data augmentation)
-    #stats = ((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)) - cifar10
-    stats = ((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))      #cifar100
-
-    train_tfms = tt.Compose([tt.RandomCrop(32, padding=4, padding_mode='reflect'), 
-                            tt.RandomHorizontalFlip(), 
-                            # tt.RandomRotate
-                            # tt.RandomResizedCrop(256, scale=(0.5,0.9), ratio=(1, 1)), 
-                            # tt.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-                            tt.ToTensor(), 
-                            tt.Normalize(*stats,inplace=True)])
-    valid_tfms = tt.Compose([tt.ToTensor(), tt.Normalize(*stats)])
-
-    # PyTorch datasets
-    #train_ds = ImageFolder(data_dir+'/train', train_tfms)
-    #valid_ds = ImageFolder(data_dir+'/test', valid_tfms)
-    train_ds = CIFAR100(root = 'data/', download = True, transform = train_tfms)
-    valid_ds = CIFAR100(root = 'data/', train = False, transform = valid_tfms)
 
     benchmark = SplitCIFAR100(n_experiences=20, seed=42)
     train_ds = benchmark.train_stream[0].dataset
     valid_ds = benchmark.test_stream[0].dataset
 
-    print(train_ds)
-    print(valid_ds)
-    print(len(train_ds))
-    print(len(valid_ds))
-    print('total classes:', len(train_ds.classes))
-    print(train_ds.classes) 
     batch_size = 400
     # PyTorch data loaders
     train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=3, pin_memory=True)
@@ -128,8 +75,8 @@ def main():
     model = to_device(SlimResNet34(100), device)
 
     history = [evaluate(model, valid_dl)]
-    epochs = 50
-    max_lr = 0.01
+    epochs = 30
+    max_lr = 0.1
     grad_clip = 0.1
     weight_decay = 1e-4
     opt_func = torch.optim.Adam
@@ -137,19 +84,10 @@ def main():
                              grad_clip=grad_clip, 
                              weight_decay=weight_decay, 
                              opt_func=opt_func)
-
-
 def accuracy(outputs, labels):
     _, preds = torch.max(outputs, dim=1)
     return torch.tensor(torch.sum(preds == labels).item() / len(preds))
 
-from torch import nn 
-def conv_block(in_channels, out_channels, pool=False):
-    layers = [nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1), 
-              nn.BatchNorm2d(out_channels), 
-              nn.ReLU(inplace=True)]
-    if pool: layers.append(nn.MaxPool2d(2))
-    return nn.Sequential(*layers)
 class ImageClassificationBase(torch.nn.Module):
     def training_step(self, batch):
         images, labels, _= batch 
@@ -174,8 +112,6 @@ class ImageClassificationBase(torch.nn.Module):
     def epoch_end(self, epoch, result):
         print("Epoch [{}], last_lr: {:.5f}, train_loss: {:.4f}, val_loss: {:.4f}, val_acc: {:.4f}".format(
             epoch, result['lrs'][-1], result['train_loss'], result['val_loss'], result['val_acc']))
-
-
 def conv3x3(in_planes, out_planes, stride=1):
     return nn.Conv2d(
         in_planes,
@@ -185,9 +121,6 @@ def conv3x3(in_planes, out_planes, stride=1):
         padding=1,
         bias=False,
     )
-
-
-from torch.nn.functional import relu, avg_pool2d
 class BasicBlock(nn.Module):
     expansion = 1
 
@@ -217,8 +150,6 @@ class BasicBlock(nn.Module):
         out += self.shortcut(x)
         out = relu(out)
         return out
-
-
 class ResNet(ImageClassificationBase):
     def __init__(self, block, num_blocks, num_classes, nf):
         super(ResNet, self).__init__()
@@ -260,10 +191,6 @@ def SlimResNet34(nclasses, nf=20):
     """Slimmed ResNet18."""
     return ResNet(BasicBlock, [3, 4, 6, 3], nclasses, nf)
 
-def denormalize(images, means, stds):
-    means = torch.tensor(means).reshape(1, 3, 1, 1)
-    stds = torch.tensor(stds).reshape(1, 3, 1, 1)
-    return images * stds + means
 
 def get_default_device():
     """Pick GPU if available, else CPU"""
@@ -303,7 +230,6 @@ def evaluate(model, val_loader):
 def get_lr(optimizer):
     for param_group in optimizer.param_groups:
         return param_group['lr']
-
 def fit_one_cycle(epochs, max_lr, model, train_loader, val_loader, 
                   weight_decay=0, grad_clip=None, opt_func=torch.optim.SGD):
     torch.cuda.empty_cache()
