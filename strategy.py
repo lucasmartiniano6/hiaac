@@ -5,22 +5,24 @@ from tqdm import tqdm
 import random
 from torch.utils.tensorboard import SummaryWriter
 
-# TODO:
-# pra atualizar o exemplar set:
-# fazer a cada experiência 
-# q é o número de exemplares por classe (constante)
-# q * old_classes = tamanho do exemplar set
+"""
+ILOS 
 
-# primeira experiencia:
-#     exemplar set = 0
-#     ce loss normal
-# atualiza exemplar set (herding selection)
-# segunda experiencia:
-#     exemplar set != 0
-#     classes novas -> ce loss modificado
-#     misturar (exemplar set\ciclado + classes novas) -> ce loss normal
-# atualiza exemplar set (algoritmo1 NCM)
-# (...)
+caso (primeira experiencia):
+    exemplar set = 0
+    for batch in experience:
+        treinar tudo com cross-entropy padrão
+    adiciona novas classes no exemplar set (herding selection)
+caso (resto das experiencias): 
+    exemplar set != 0
+    for batch in experience:
+        treinar classes novas -> cross-entropy modificada
+        treinar mistura balanceada do (classes novas + exemplar set\ciclado) -> cross-entropy padrão
+    adiciona novas classes no exemplar set (herding selection)
+    *update exemplar set com (novas observações de classes antigas) (ref.: algoritmo1 NCM)
+(...)
+
+"""
 
 class Strategy:
     def __init__(

@@ -1,6 +1,6 @@
 import torch
 from strategy import Strategy
-from slimrestnet import SlimResNet34
+from slimresnet import SlimResNet34
 
 def create_strategy(args, check_plugin=None):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
