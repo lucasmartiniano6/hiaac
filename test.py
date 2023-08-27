@@ -62,7 +62,7 @@ def main():
     train_ds = benchmark.train_stream[0].dataset
     valid_ds = benchmark.test_stream[0].dataset
 
-    batch_size = 400
+    batch_size = 8
     # PyTorch data loaders
     train_dl = DataLoader(train_ds, batch_size, shuffle=True, num_workers=3, pin_memory=True)
     valid_dl = DataLoader(valid_ds, batch_size*2, num_workers=3, pin_memory=True)
@@ -79,11 +79,29 @@ def main():
     max_lr = 0.1
     grad_clip = 0.1
     weight_decay = 1e-4
-    opt_func = torch.optim.Adam
-    history += fit_one_cycle(epochs, max_lr, model, train_dl, valid_dl, 
-                             grad_clip=grad_clip, 
-                             weight_decay=weight_decay, 
-                             opt_func=opt_func)
+    optimizer = torch.optim.SGD(model.parameters(), max_lr, momentum=0.9, weight_decay=weight_decay)
+#    history += fit_one_cycle(epochs, max_lr, model, train_dl, valid_dl, grad_clip=grad_clip, weight_decay=weight_decay, opt_func=optimizer)
+
+    for epoch in range(epochs):
+        model.train()
+        for batch in train_dl:
+            x, y, _ = batch
+            out = model(x)
+            loss = F.cross_entropy(out, y)
+            loss.backward()
+            optimizer.zero_grad()
+            optimizer.step()
+
+        # Validation phase
+        model.eval()
+        outputs = [model.validation_step(batch) for batch in valid_dl]
+        batch_accs = [x['val_acc'] for x in outputs]
+        epoch_acc = torch.stack(batch_accs).mean().item()      # Combine accuracies
+        print('epoch: ', epoch, 'acc: ', epoch_acc)
+
+
+
+
 def accuracy(outputs, labels):
     _, preds = torch.max(outputs, dim=1)
     return torch.tensor(torch.sum(preds == labels).item() / len(preds))
