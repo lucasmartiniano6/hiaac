@@ -80,25 +80,38 @@ def main():
     grad_clip = 0.1
     weight_decay = 1e-4
     optimizer = torch.optim.SGD(model.parameters(), max_lr, momentum=0.9, weight_decay=weight_decay)
-#    history += fit_one_cycle(epochs, max_lr, model, train_dl, valid_dl, grad_clip=grad_clip, weight_decay=weight_decay, opt_func=optimizer)
+#   fit_one_cycle(epochs, max_lr, model, train_dl, valid_dl, grad_clip=grad_clip, weight_decay=weight_decay, opt_func=optimizer)
+
+    torch.cuda.empty_cache()
+    sched = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr, epochs=epochs, 
+                                                steps_per_epoch=len(train_dl))
 
     for epoch in range(epochs):
+        # Training Phase 
         model.train()
+        train_losses = []
+        lrs = []
         for batch in train_dl:
-            x, y, _ = batch
-            out = model(x)
-            loss = F.cross_entropy(out, y)
+            loss = model.training_step(batch)
+            train_losses.append(loss)
             loss.backward()
-            optimizer.zero_grad()
+            
+            # Gradient clipping
+            if grad_clip: 
+                nn.utils.clip_grad_value_(model.parameters(), grad_clip)
+            
             optimizer.step()
-
+            optimizer.zero_grad()
+            
+            # Record & update learning rate
+            lrs.append(get_lr(optimizer))
+            sched.step()
+        
         # Validation phase
-        model.eval()
-        outputs = [model.validation_step(batch) for batch in valid_dl]
-        batch_accs = [x['val_acc'] for x in outputs]
-        epoch_acc = torch.stack(batch_accs).mean().item()      # Combine accuracies
-        print('epoch: ', epoch, 'acc: ', epoch_acc)
-
+        result = evaluate(model, valid_dl)
+        result['train_loss'] = torch.stack(train_losses).mean().item()
+        result['lrs'] = lrs
+        model.epoch_end(epoch, result)
 
 
 
@@ -208,7 +221,6 @@ class ResNet(ImageClassificationBase):
 def SlimResNet34(nclasses, nf=20):
     """Slimmed ResNet18."""
     return ResNet(BasicBlock, [3, 4, 6, 3], nclasses, nf)
-
 
 def get_default_device():
     """Pick GPU if available, else CPU"""
