@@ -152,13 +152,13 @@ def conv_block(in_channels, out_channels, pool=False):
     return nn.Sequential(*layers)
 class ImageClassificationBase(torch.nn.Module):
     def training_step(self, batch):
-        images, labels = batch 
+        images, labels, _= batch 
         out = self(images)                  # Generate predictions
         loss = F.cross_entropy(out, labels) # Calculate loss
         return loss
     
     def validation_step(self, batch):
-        images, labels = batch 
+        images, labels, _ = batch 
         out = self(images)                    # Generate predictions
         loss = torch.nn.functional.cross_entropy(out, labels)   # Calculate loss
         acc = accuracy(out, labels)           # Calculate accuracy
