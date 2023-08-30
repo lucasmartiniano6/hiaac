@@ -45,8 +45,8 @@ class Strategy:
         self.args = args
         self.eval_mb_size = args.eval_mb_size
 
-        self.old_classes = None
-        self.curr_classes = None
+        self.old_classes = None # 
+        self.curr_classes = None # 
 
         self.exemplar = []
         self.q = 8 # exemplars per class
@@ -70,9 +70,6 @@ class Strategy:
         loss = self.criterion(outputs, labels)
         loss.backward()
         self.optimizer.step()
-
-        self.curr_classes = torch.cat((self.curr_classes, labels), 0) if self.curr_classes is not None else labels
-        self.curr_classes = torch.unique(self.curr_classes)
 
         self.training_loss += loss.item()
         self.global_step += 1
@@ -115,8 +112,6 @@ class Strategy:
                     self._train_batch(inputs, labels)
 
         # update exemplar set with herding selection
-        print('Old classes: ', self.old_classes)
-        print('Curr classes: ', self.curr_classes)
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
         exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
@@ -126,7 +121,8 @@ class Strategy:
             if(book.get(sample[1], 0) < self.q):
                 book[sample[1]] = book.get(sample[1], 0) + 1
                 self.exemplar.append(sample)
-        self.old_classes = self.curr_classes
+
+        print('Seen classes: ', self.experience.previous_classes)
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
