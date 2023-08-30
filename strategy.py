@@ -126,36 +126,40 @@ class Strategy:
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
-    def eval(self, test_stream):
-        with torch.no_grad():
-            mean_acc = 0.0
-            for exp in test_stream:
-                total, correct = 0, 0
-                step = 0
-                for batch in self.batched(exp.dataset, self.args.eval_mb_size):
-                    inputs, labels, _ = zip(*batch)
-                    inputs = torch.stack(inputs)
-                    labels = torch.tensor(labels)
+    @torch.no_grad()
+    def eval(self, test_stream, curr_exp):
+        acc_list = [] * self.args.n_exp
+        mean_acc = 0.0 # mean accuracy for whole test stream
+        for exp in test_stream:
+            total, correct = 0, 0
+            step = 0
+            for batch in self.batched(exp.dataset, self.args.eval_mb_size):
+                inputs, labels, _ = zip(*batch)
+                inputs = torch.stack(inputs)
+                labels = torch.tensor(labels)
 
-                    inputs = inputs.to(self.device)
-                    labels = labels.to(self.device)
+                inputs = inputs.to(self.device)
+                labels = labels.to(self.device)
 
-                    outputs = self.model(inputs)
-                    _, predicted = torch.max(outputs.data, 1)
-                    total += labels.size(0)
-                    correct += (predicted == labels).sum().item()
-                            
-                    self.writer.add_scalar(f'Accuracy/Exp{exp.current_experience}', correct/total, step)
-                    step += 1
+                outputs = self.model(inputs)
+                _, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+                        
+                self.writer.add_scalar(f'Accuracy/Exp{exp.current_experience}', correct/total, step)
+                step += 1
 
-                accuracy = 100 * correct / total 
-                print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
-                mean_acc += accuracy
-            mean_acc /= len(test_stream)
-            if len(test_stream) == 1:
-                open('res.txt', 'w').close()
-            with open("res.txt", "a") as f:
-                f.write(f'{mean_acc:.2f} ')
+            accuracy = 100 * correct / total 
+            print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
+            acc_list[exp.current_experience] = accuracy
+            mean_acc += accuracy
+        print('Acc list: ', *acc_list)
+        seen_curr = sum(acc_list[:curr_exp+1]) / (curr_exp+1)
+        mean_acc /= len(test_stream)
+        if len(test_stream) == 1:
+            open('res.txt', 'w').close()
+        with open("res.txt", "a") as f:
+            pass
 
 class CustomLoss:
     # Modified Cross-Distillation Loss

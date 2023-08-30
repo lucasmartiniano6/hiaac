@@ -27,7 +27,7 @@ class Trainer():
 
             cl_strategy.train(experience)
             # eval only in previously trained classes
-            cl_strategy.eval(benchmark.test_stream[:experience.current_experience+1])
+            cl_strategy.eval(benchmark.test_stream, experience.current_experience)
 
         torch.save(cl_strategy.model.state_dict(), 'pth/saved_model.pth')
         cl_strategy.writer.close()
