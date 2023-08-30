@@ -149,17 +149,17 @@ class Strategy:
 
             accuracy = 100 * correct / total 
             acc_list[exp.current_experience] = accuracy
-            print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
+            # print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
 
         seen_acc = sum(acc_list[:curr_exp+1]) / (curr_exp+1)
         total_acc = sum(acc_list) / len(acc_list)
-        print('Acc list: ', *acc_list)
-        print('Seen acc', seen_acc)
-        print('Total acc', total_acc)
-        if len(test_stream) == 1:
+        print(f'Average accuracy for seen experiences: {seen_acc:.2f} %')
+        print(f'Average accuracy for all experiences: {total_acc:.2f} %')
+        if(curr_exp == 0): 
             open('res.txt', 'w').close()
         with open("res.txt", "a") as f:
-            pass
+            f.write(f'{seen_acc:.2f} ')
+        return seen_acc
 
 class CustomLoss:
     # Modified Cross-Distillation Loss
