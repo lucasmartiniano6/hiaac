@@ -157,9 +157,9 @@ class Strategy:
         print(f'Average accuracy for all  experiences: {total_acc:.2f} %')
         with open("res.txt", "a") as f:
             f.write("==========================================\n")
-            f.write("CURR EXP: ", curr_exp, "\n")
+            f.write("CURR EXP: " + curr_exp + "\n")
             for i in range(len(acc_list)):
-                f.write("   EXP ", i, ": ", acc_list[i], "\n")
+                f.write("   EXP " + str(i) + ": " + str(acc_list[i]) + "\n")
             f.write('\n')
         
 
