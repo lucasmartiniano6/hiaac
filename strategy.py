@@ -86,62 +86,48 @@ class Strategy:
             for i in self.exemplar:
                 dl_groups[i[1]] = dl_groups.get(i[1], 0) + 1
             print("Exemplar set: ", dl_groups)
+        print('Old classes: ', self.old_classes)
+        print('Curr classes: ', self.curr_classes)
         for epoch in range(self.args.epochs):
             mb_size = self.args.train_mb_size
+            self.criterion = self.CE
             if experience.current_experience > 0:
-                # two-step learning
                 steps = zip(self.batched(self.experience.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
                 for batch_red, batch_black in tqdm(steps): 
-                    # Red dot - Modified Cross-Distillation Loss
-                    self.Mod_CD.set_old_classes(self.old_classes)
-                    self.criterion = self.Mod_CD 
+                    # Red dot - Current classes
                     inputs_red, labels_red, *_ = zip(*batch_red)
                     inputs_red = torch.stack(inputs_red)
                     labels_red = torch.tensor(labels_red)
-                    self._train_batch(inputs_red, labels_red)
 
-                    # Black dot - Cross-Entropy Loss
-                    self.criterion = self.CE 
+                    # Black dot - Old classes
                     inputs_black, labels_black, *_ = zip(*batch_black)
                     inputs_black = torch.stack(inputs_black)
                     labels_black = torch.tensor(labels_black)
                 
+                    # Balanced - Current + Old classes
                     inputs_balanced = torch.cat((inputs_red, inputs_black), 0)
                     labels_balanced = torch.cat((labels_red, labels_black), 0)
                     self._train_batch(inputs_balanced, labels_balanced)
-                # update exemplar set with NCM
-                herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-                exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
-                book = {}
-                while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
-                    sample = self.experience.dataset[next(exemplar_idx)]
-                    if(book.get(sample[1], 0) < self.q):
-                        book[sample[1]] = book.get(sample[1], 0) + 1
-                        self.exemplar.append(sample)
-                # exemplar_idx = random.sample(range(len(self.experience.dataset)), self.q*len(self.experience.classes_in_this_experience))
-                #for i in exemplar_idx:
-                #   self.exemplar.append(self.experience.dataset[i])
             else:
                 for batch in tqdm(self.batched(self.experience.dataset, mb_size)):
                     inputs, labels, *_ = zip(*batch)
                     inputs = torch.stack(inputs) # 8, 3, 32, 32
                     labels = torch.tensor(labels) # 8 
 
-                    self.criterion = self.CE
                     self._train_batch(inputs, labels)
-                # update exemplar set with herding selection
-                herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-                exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
-                book = {}
-                while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
-                    sample = self.experience.dataset[next(exemplar_idx)]
-                    if(book.get(sample[1], 0) < self.q):
-                        book[sample[1]] = book.get(sample[1], 0) + 1
-                        self.exemplar.append(sample)
 
-            print("..Updated exemplar set")
-            self.old_classes = self.curr_classes
-            # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
+        # update exemplar set with herding selection
+        print("Updating exemplar set...")
+        herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
+        exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
+        book = {}
+        while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
+            sample = self.experience.dataset[next(exemplar_idx)]
+            if(book.get(sample[1], 0) < self.q):
+                book[sample[1]] = book.get(sample[1], 0) + 1
+                self.exemplar.append(sample)
+        self.old_classes = self.curr_classes
+        # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
     def eval(self, test_stream):
