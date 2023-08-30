@@ -71,7 +71,7 @@ class Strategy:
         loss.backward()
         self.optimizer.step()
 
-        self.curr_classes = torch.cat((self.old_classes, labels), 0) if self.old_classes is not None else labels
+        self.curr_classes = torch.cat((self.curr_classes, labels), 0) if self.curr_classes is not None else labels
         self.curr_classes = torch.unique(self.curr_classes)
 
         self.training_loss += loss.item()
@@ -86,8 +86,6 @@ class Strategy:
             for i in self.exemplar:
                 dl_groups[i[1]] = dl_groups.get(i[1], 0) + 1
             print("Exemplar set: ", dl_groups)
-        print('Old classes: ', self.old_classes)
-        print('Curr classes: ', self.curr_classes)
         for epoch in range(self.args.epochs):
             mb_size = self.args.train_mb_size
             self.criterion = self.CE
@@ -117,6 +115,8 @@ class Strategy:
                     self._train_batch(inputs, labels)
 
         # update exemplar set with herding selection
+        print('Old classes: ', self.old_classes)
+        print('Curr classes: ', self.curr_classes)
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
         exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
