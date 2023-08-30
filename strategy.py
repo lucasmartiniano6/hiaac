@@ -128,7 +128,6 @@ class Strategy:
     @torch.no_grad()
     def eval(self, test_stream, curr_exp):
         acc_list = [0] * self.args.n_exp
-        mean_acc = 0.0 # mean accuracy for whole test stream
         for exp in test_stream:
             total, correct = 0, 0
             step = 0
@@ -149,14 +148,14 @@ class Strategy:
                 step += 1
 
             accuracy = 100 * correct / total 
-            print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
             acc_list[exp.current_experience] = accuracy
-            mean_acc += accuracy
-        print('Acc list: ', *acc_list)
+            print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
+
         seen_acc = sum(acc_list[:curr_exp+1]) / (curr_exp+1)
+        total_acc = sum(acc_list) / len(acc_list)
+        print('Acc list: ', *acc_list)
         print('Seen acc', seen_acc)
-        mean_acc /= len(test_stream)
-        print('Mean acc', seen_acc)
+        print('Total acc', total_acc)
         if len(test_stream) == 1:
             open('res.txt', 'w').close()
         with open("res.txt", "a") as f:
