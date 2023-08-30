@@ -26,7 +26,7 @@ class Trainer():
 #            print('Future Classes: ', experience.future_classes)
 
             cl_strategy.train(experience)
-            # eval only in previously trained classes
+            print("TEST STREAM EVALUATION")
             cl_strategy.eval(benchmark.test_stream, experience.current_experience)
 
         torch.save(cl_strategy.model.state_dict(), 'pth/saved_model.pth')

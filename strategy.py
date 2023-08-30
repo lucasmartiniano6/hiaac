@@ -110,7 +110,8 @@ class Strategy:
                     labels = torch.tensor(labels) # 8 
 
                     self._train_batch(inputs, labels)
-
+            acc_curr_exp = self.validate_exp(experience)
+            print(f'exp{experience.current_experience} : EPOCH {epoch} : ACC {acc_curr_exp:.2f}')
         # update exemplar set with herding selection
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
@@ -124,42 +125,40 @@ class Strategy:
 
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
+    @torch.no_grad()
+    def validate_exp(self, exp):
+        total, correct = 0, 0
+        for batch in self.batched(exp.dataset, self.args.eval_mb_size):
+            inputs, labels, _ = zip(*batch)
+            inputs = torch.stack(inputs)
+            labels = torch.tensor(labels)
+
+            inputs = inputs.to(self.device)
+            labels = labels.to(self.device)
+
+            outputs = self.model(inputs)
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+        accuracy = 100 * correct / total
+        return accuracy
 
     @torch.no_grad()
     def eval(self, test_stream, curr_exp):
         acc_list = [0] * self.args.n_exp
         for exp in test_stream:
-            total, correct = 0, 0
-            step = 0
-            for batch in self.batched(exp.dataset, self.args.eval_mb_size):
-                inputs, labels, _ = zip(*batch)
-                inputs = torch.stack(inputs)
-                labels = torch.tensor(labels)
-
-                inputs = inputs.to(self.device)
-                labels = labels.to(self.device)
-
-                outputs = self.model(inputs)
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-                        
-                self.writer.add_scalar(f'Accuracy/Exp{exp.current_experience}', correct/total, step)
-                step += 1
-
-            accuracy = 100 * correct / total 
-            acc_list[exp.current_experience] = accuracy
+            acc_list[exp.current_experience] = self.validate_exp(exp)
             # print(f'Accuracy for experience: {exp.current_experience} is {accuracy:.2f} %')
 
         seen_acc = sum(acc_list[:curr_exp+1]) / (curr_exp+1)
         total_acc = sum(acc_list) / len(acc_list)
+        print(f'Average accuracy for curr  experience: {acc_list[curr_exp]:.2f} %')
         print(f'Average accuracy for seen experiences: {seen_acc:.2f} %')
-        print(f'Average accuracy for all experiences: {total_acc:.2f} %')
+        print(f'Average accuracy for all  experiences: {total_acc:.2f} %')
         if(curr_exp == 0): 
             open('res.txt', 'w').close()
         with open("res.txt", "a") as f:
             f.write(f'{seen_acc:.2f} ')
-        return seen_acc
 
 class CustomLoss:
     # Modified Cross-Distillation Loss
