@@ -71,7 +71,7 @@ class Strategy:
         loss.backward()
         self.optimizer.step()
 
-        self.curr_classes = torch.cat((self.old_classes, labels), 0) if self.old_classes is not None else labels
+        self.curr_classes = torch.cat((self.curr_classes, labels), 0) if self.curr_classes is not None else labels
         self.curr_classes = torch.unique(self.curr_classes)
 
         self.training_loss += loss.item()
@@ -81,6 +81,7 @@ class Strategy:
     def train(self, experience):
         self.model.train() 
         self.experience = experience
+        self.curr_classes = None
         if(len(self.exemplar) != 0):
             dl_groups = {}
             for i in self.exemplar:
@@ -140,7 +141,8 @@ class Strategy:
                         self.exemplar.append(sample)
 
             print("..Updated exemplar set")
-            self.old_classes = self.curr_classes
+            self.old_classes = torch.cat((self.curr_classes, self.old_classes), 0) if self.old_classes is not None else self.curr_classes
+            self.old_classes = torch.unique(self.old_classes)
             # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
