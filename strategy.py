@@ -51,6 +51,7 @@ class Strategy:
         self.exemplar = []
         self.q = 8 # exemplars per class
 
+        self.avg_acc = [0] * self.args.n_exp
         self.writer = SummaryWriter('tb_data/ilos')
         self.training_loss = 0.0
         self.global_step = 0
@@ -155,10 +156,13 @@ class Strategy:
         print(f'Average accuracy for curr  experience: {acc_list[curr_exp]:.2f} %')
         print(f'Average accuracy for seen experiences: {seen_acc:.2f} %')
         print(f'Average accuracy for all  experiences: {total_acc:.2f} %')
-        if(curr_exp == 0): 
-            open('res.txt', 'w').close()
-        with open("res.txt", "a") as f:
-            f.write(f'{seen_acc:.2f} ')
+        
+        self.avg_acc = [sum(x) for x in zip(acc_list, self.avg_acc)]
+        print(self.avg_acc)
+        with open("res.txt", "w") as f:
+            avg_acc = [x / (curr_exp+1) for x in self.avg_acc]
+            out = [str(i) for i in acc_list]
+            f.write(' '.join(out))
 
 class CustomLoss:
     # Modified Cross-Distillation Loss
