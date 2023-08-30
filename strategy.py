@@ -122,13 +122,12 @@ class Strategy:
                 book[sample[1]] = book.get(sample[1], 0) + 1
                 self.exemplar.append(sample)
 
-        print('Seen classes: ', self.experience.previous_classes)
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
 
 
     @torch.no_grad()
     def eval(self, test_stream, curr_exp):
-        acc_list = [] * self.args.n_exp
+        acc_list = [0] * self.args.n_exp
         mean_acc = 0.0 # mean accuracy for whole test stream
         for exp in test_stream:
             total, correct = 0, 0
@@ -154,8 +153,10 @@ class Strategy:
             acc_list[exp.current_experience] = accuracy
             mean_acc += accuracy
         print('Acc list: ', *acc_list)
-        seen_curr = sum(acc_list[:curr_exp+1]) / (curr_exp+1)
+        seen_acc = sum(acc_list[:curr_exp+1]) / (curr_exp+1)
+        print('Seen acc', seen_acc)
         mean_acc /= len(test_stream)
+        print('Mean acc', seen_acc)
         if len(test_stream) == 1:
             open('res.txt', 'w').close()
         with open("res.txt", "a") as f:
