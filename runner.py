@@ -15,6 +15,9 @@ def main():
 
     args = parser.parse_args()
 
+    open("log.txt", "w").close()
+    open("res.txt", "w").close()
+
     start_time = time.time()
     train.Trainer(args)
     print(f'\nTotal time: {time.time() - start_time:.3f}s')
