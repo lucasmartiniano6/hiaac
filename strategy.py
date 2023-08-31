@@ -83,6 +83,7 @@ class Strategy:
             for i in self.exemplar:
                 dl_groups[i[1]] = dl_groups.get(i[1], 0) + 1
             print("Exemplar set: ", dl_groups)
+        log = []
         for epoch in range(self.args.epochs):
             mb_size = self.args.train_mb_size
             self.criterion = self.CE
@@ -111,7 +112,9 @@ class Strategy:
 
                     self._train_batch(inputs, labels)
             acc_curr_exp = self.validate_exp(experience)
-            print(f'exp{experience.current_experience} : EPOCH {epoch} : ACC {acc_curr_exp:.2f}')
+            log_str = f'exp{experience.current_experience} : EPOCH {epoch} : ACC {acc_curr_exp:.2f}'
+            log.append(log_str)
+            print(log_str)
         # update exemplar set with herding selection
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
@@ -122,8 +125,12 @@ class Strategy:
             if(book.get(sample[1], 0) < self.q):
                 book[sample[1]] = book.get(sample[1], 0) + 1
                 self.exemplar.append(sample)
-
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
+        with(open("log.txt", "a")) as f:
+            f.write("==========================================\n")
+            f.write("EXP: " + str(experience.current_experience) + "\n")
+            for i in log:
+                f.write(i + "\n")
 
     @torch.no_grad()
     def validate_exp(self, exp):
@@ -160,6 +167,8 @@ class Strategy:
             f.write("CURR EXP: " + str(curr_exp) + "\n")
             for i in range(len(acc_list)):
                 f.write("   EXP " + str(i) + ": " + str(acc_list[i]) + "\n")
+            f.write('avg_acc_seen_classes: ' + str(seen_acc) + '\n')
+            f.write('avg_acc_all_classes: ' + str(total_acc) + '\n')
             f.write('\n')
         
 
