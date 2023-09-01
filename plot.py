@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def avg_acc_per_class_step():
-    with open("results/test_set_50_epochs.txt", "r") as f:
+    with open("results/res.txt", "r") as f:
         y_seen, y_all = [], []
         for line in f.readlines():
             a = line.split()
@@ -26,7 +26,7 @@ def avg_acc_per_class_step():
 def avg_acc_per_epoch(experience):
     epoch = []
     avg_acc = []
-    with open("results/test_set_50_epochs_log.txt", "r") as f:
+    with open("results/log.txt", "r") as f:
        for line in f.readlines():
             a = line.split()
             if len(a) > 0 and a[0] == 'exp'+str(experience):
@@ -44,4 +44,4 @@ def avg_acc_per_epoch(experience):
 
 if __name__ == '__main__':
     avg_acc_per_class_step()
-    # avg_acc_per_epoch(0)
+    avg_acc_per_epoch(0)

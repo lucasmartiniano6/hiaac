@@ -49,7 +49,7 @@ class Strategy:
         self.curr_classes = None # 
 
         self.exemplar = []
-        self.q = 8 # exemplars per class
+        self.q = self.args.q # exemplars per class
 
         self.writer = SummaryWriter('tb_data/ilos')
         self.training_loss = 0.0
@@ -87,7 +87,7 @@ class Strategy:
         self.criterion = self.CE
         mb_size = self.args.train_mb_size
         for epoch in range(self.args.epochs):
-            if experience.current_experience > 0 and False: 
+            if experience.current_experience > 0 : 
                 steps = zip(self.batched(self.experience.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
                 for batch_red, batch_black in tqdm(steps): 
                     # Red dot - Current classes
@@ -116,16 +116,15 @@ class Strategy:
             log.append(log_str)
             print(log_str)
         # update exemplar set with herding selection
-        if False:
-            print("Updating exemplar set...")
-            herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-            exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
-            book = {}
-            while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
-                sample = self.experience.dataset[next(exemplar_idx)]
-                if(book.get(sample[1], 0) < self.q):
-                    book[sample[1]] = book.get(sample[1], 0) + 1
-                    self.exemplar.append(sample)
+        print("Updating exemplar set...")
+        herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
+        exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
+        book = {}
+        while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
+            sample = self.experience.dataset[next(exemplar_idx)]
+            if(book.get(sample[1], 0) < self.q):
+                book[sample[1]] = book.get(sample[1], 0) + 1
+                self.exemplar.append(sample)
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
         with(open("log.txt", "a")) as f:
             f.write("==========================================\n")
