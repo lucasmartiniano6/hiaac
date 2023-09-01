@@ -84,10 +84,10 @@ class Strategy:
                 dl_groups[i[1]] = dl_groups.get(i[1], 0) + 1
             print("Exemplar set: ", dl_groups)
         log = []
+        self.criterion = self.CE
+        mb_size = self.args.train_mb_size
         for epoch in range(self.args.epochs):
-            mb_size = self.args.train_mb_size
-            self.criterion = self.CE
-            if experience.current_experience > 0:
+            if experience.current_experience > 0 and False: 
                 steps = zip(self.batched(self.experience.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
                 for batch_red, batch_black in tqdm(steps): 
                     # Red dot - Current classes
@@ -116,15 +116,16 @@ class Strategy:
             log.append(log_str)
             print(log_str)
         # update exemplar set with herding selection
-        print("Updating exemplar set...")
-        herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-        exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
-        book = {}
-        while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
-            sample = self.experience.dataset[next(exemplar_idx)]
-            if(book.get(sample[1], 0) < self.q):
-                book[sample[1]] = book.get(sample[1], 0) + 1
-                self.exemplar.append(sample)
+        if False:
+            print("Updating exemplar set...")
+            herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
+            exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
+            book = {}
+            while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
+                sample = self.experience.dataset[next(exemplar_idx)]
+                if(book.get(sample[1], 0) < self.q):
+                    book[sample[1]] = book.get(sample[1], 0) + 1
+                    self.exemplar.append(sample)
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
         with(open("log.txt", "a")) as f:
             f.write("==========================================\n")
