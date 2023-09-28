@@ -1,11 +1,9 @@
 rodar CE padrão
-    com exemplar set
+    com exemplar set OK
     sem exemplar set
 rodar CE modificada
     com exemplar set
     
-gráficos:
-    loss & acurácia
-
 obs:
-    20 epochs ta ok
+    loss & acurácia
+    10 epochs ta ok
