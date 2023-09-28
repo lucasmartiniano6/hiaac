@@ -1,0 +1,11 @@
+rodar CE padrão
+    com exemplar set
+    sem exemplar set
+rodar CE modificada
+    com exemplar set
+    
+gráficos:
+    loss & acurácia
+
+obs:
+    20 epochs ta ok

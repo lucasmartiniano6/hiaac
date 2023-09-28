@@ -59,8 +59,8 @@ def main():
     from torch.utils.data import DataLoader
 
     benchmark = SplitCIFAR100(n_experiences=20, seed=42)
-    train_ds = benchmark.train_stream[0].dataset
-    valid_ds = benchmark.test_stream[0].dataset
+    train_ds = torch.utils.data.ConcatDataset([benchmark.train_stream[0].dataset, benchmark.train_stream[1].dataset])
+    valid_ds = torch.utils.data.ConcatDataset([benchmark.test_stream[0].dataset, benchmark.test_stream[1].dataset])
 
     batch_size = 8
     # PyTorch data loaders

@@ -52,6 +52,7 @@ class Strategy:
         self.q = self.args.q # exemplars per class
 
         self.writer = SummaryWriter('tb_data/ilos')
+        self.log_loss = []
         self.training_loss = 0.0
         self.global_step = 0
     
@@ -71,9 +72,10 @@ class Strategy:
         loss.backward()
         self.optimizer.step()
 
-        self.training_loss += loss.item()
-        self.global_step += 1
-        self.writer.add_scalar('Loss/train', self.training_loss, self.global_step)        
+        self.log_loss.append(loss.item())
+        #self.training_loss += loss.item()
+        #self.global_step += 1
+        #self.writer.add_scalar('Loss/train', self.training_loss, self.global_step)        
 
     def train(self, experience):
         self.model.train() 
@@ -84,6 +86,7 @@ class Strategy:
                 dl_groups[i[1]] = dl_groups.get(i[1], 0) + 1
             print("Exemplar set: ", dl_groups)
         log = []
+        self.log_loss = []
         self.criterion = self.CE
         mb_size = self.args.train_mb_size
         for epoch in range(self.args.epochs):
@@ -131,6 +134,11 @@ class Strategy:
             f.write("EXP: " + str(experience.current_experience) + "\n")
             for i in log:
                 f.write(i + "\n")
+        with(open("loss.txt", "a")) as f:
+            f.write("==========================================\n")
+            f.write("EXP: " + str(experience.current_experience) + "\n")
+            for i in self.log_loss:
+                f.write(str(i) + "\n")
 
     @torch.no_grad()
     def validate_exp(self, exp):
