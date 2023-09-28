@@ -46,7 +46,6 @@ class Strategy:
         self.eval_mb_size = args.eval_mb_size
 
         self.old_classes = None # 
-        self.curr_classes = None # 
 
         self.exemplar = []
         self.q = self.args.q # exemplars per class
@@ -87,10 +86,11 @@ class Strategy:
             print("Exemplar set: ", dl_groups)
         log = []
         self.log_loss = []
-        self.criterion = self.CE
+        self.criterion = self.Mod_CD
         mb_size = self.args.train_mb_size
         for epoch in range(self.args.epochs):
             if experience.current_experience > 0 : 
+                self.criterion = self.Mod_CD
                 steps = zip(self.batched(self.experience.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
                 for batch_red, batch_black in tqdm(steps): 
                     # Red dot - Current classes
@@ -108,6 +108,7 @@ class Strategy:
                     labels_balanced = torch.cat((labels_red, labels_black), 0)
                     self._train_batch(inputs_balanced, labels_balanced)
             else:
+                self.criterion = self.CE
                 for batch in tqdm(self.batched(self.experience.dataset, mb_size)):
                     inputs, labels, *_ = zip(*batch)
                     inputs = torch.stack(inputs) # 8, 3, 32, 32
@@ -118,6 +119,8 @@ class Strategy:
             log_str = f'exp{experience.current_experience} : EPOCH {epoch} : ACC {acc_curr_exp:.2f}'
             log.append(log_str)
             print(log_str)
+        #update old classes
+        self.old_classes = torch.tensor(experience.classes_in_this_experience)
         # update exemplar set with herding selection
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
@@ -183,7 +186,6 @@ class Strategy:
 class CustomLoss:
     # Modified Cross-Distillation Loss
     def __init__(self):
-        self.old_classes = None
         self.temperature = 2.0
         self.alpha = 0.5
         self.beta = 0.5
