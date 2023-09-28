@@ -121,6 +121,7 @@ class Strategy:
             print(log_str)
         #update old classes
         self.old_classes = torch.tensor(experience.classes_in_this_experience)
+        self.Mod_CD.set_old_classes(self.old_classes)
         # update exemplar set with herding selection
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
@@ -186,6 +187,7 @@ class Strategy:
 class CustomLoss:
     # Modified Cross-Distillation Loss
     def __init__(self):
+        self.old_classes = None
         self.temperature = 2.0
         self.alpha = 0.5
         self.beta = 0.5
