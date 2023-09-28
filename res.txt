@@ -1,0 +1,500 @@
+==========================================
+CURR EXP: 0
+   EXP 0: 70.6
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 70.6
+avg_acc_all_classes: 3.53
+
+==========================================
+CURR EXP: 1
+   EXP 0: 0.0
+   EXP 1: 77.8
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 38.9
+avg_acc_all_classes: 3.8899999999999997
+
+==========================================
+CURR EXP: 2
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 82.2
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 27.400000000000002
+avg_acc_all_classes: 4.11
+
+==========================================
+CURR EXP: 3
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 79.6
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 19.9
+avg_acc_all_classes: 3.9799999999999995
+
+==========================================
+CURR EXP: 4
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 70.8
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 14.16
+avg_acc_all_classes: 3.54
+
+==========================================
+CURR EXP: 5
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 76.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 12.666666666666666
+avg_acc_all_classes: 3.8
+
+==========================================
+CURR EXP: 6
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 70.2
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 10.028571428571428
+avg_acc_all_classes: 3.5100000000000002
+
+==========================================
+CURR EXP: 7
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 75.6
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 9.45
+avg_acc_all_classes: 3.78
+
+==========================================
+CURR EXP: 8
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 73.4
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 8.155555555555557
+avg_acc_all_classes: 3.6700000000000004
+
+==========================================
+CURR EXP: 9
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 75.4
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 7.540000000000001
+avg_acc_all_classes: 3.7700000000000005
+
+==========================================
+CURR EXP: 10
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 86.4
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 7.854545454545455
+avg_acc_all_classes: 4.32
+
+==========================================
+CURR EXP: 11
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 82.4
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 6.866666666666667
+avg_acc_all_classes: 4.12
+
+==========================================
+CURR EXP: 12
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 75.8
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 5.8307692307692305
+avg_acc_all_classes: 3.79
+
+==========================================
+CURR EXP: 13
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 80.8
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 5.771428571428571
+avg_acc_all_classes: 4.04
+
+==========================================
+CURR EXP: 14
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 82.6
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 5.506666666666666
+avg_acc_all_classes: 4.13
+
+==========================================
+CURR EXP: 15
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 79.6
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 4.975
+avg_acc_all_classes: 3.9799999999999995
+
+==========================================
+CURR EXP: 16
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 86.6
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 5.094117647058823
+avg_acc_all_classes: 4.33
+
+==========================================
+CURR EXP: 17
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 87.8
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 4.877777777777777
+avg_acc_all_classes: 4.39
+
+==========================================
+CURR EXP: 18
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 74.8
+   EXP 19: 0.0
+avg_acc_seen_classes: 3.9368421052631577
+avg_acc_all_classes: 3.7399999999999998
+
+==========================================
+CURR EXP: 19
+   EXP 0: 0.0
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 87.8
+avg_acc_seen_classes: 4.39
+avg_acc_all_classes: 4.39
+
