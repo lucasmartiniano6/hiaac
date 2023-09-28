@@ -87,6 +87,9 @@ class Strategy:
         log = []
         self.log_loss = []
         self.criterion = self.Mod_CD
+        #update old classes
+        self.old_classes = torch.tensor(experience.previous_classes).to(self.device) if experience.current_experience > 0 else None
+        self.Mod_CD.set_old_classes(self.old_classes)
         mb_size = self.args.train_mb_size
         for epoch in range(self.args.epochs):
             if experience.current_experience > 0 : 
@@ -119,9 +122,6 @@ class Strategy:
             log_str = f'exp{experience.current_experience} : EPOCH {epoch} : ACC {acc_curr_exp:.2f}'
             log.append(log_str)
             print(log_str)
-        #update old classes
-        self.old_classes = torch.tensor(experience.classes_in_this_experience).to(self.device)
-        self.Mod_CD.set_old_classes(self.old_classes)
         # update exemplar set with herding selection
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
