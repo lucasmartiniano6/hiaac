@@ -1,0 +1,240 @@
+==========================================
+EXP: 0
+exp0 : EPOCH 0 : ACC 55.00
+exp0 : EPOCH 1 : ACC 59.68
+exp0 : EPOCH 2 : ACC 57.28
+exp0 : EPOCH 3 : ACC 62.04
+exp0 : EPOCH 4 : ACC 63.68
+exp0 : EPOCH 5 : ACC 67.64
+exp0 : EPOCH 6 : ACC 70.16
+exp0 : EPOCH 7 : ACC 71.64
+exp0 : EPOCH 8 : ACC 71.08
+exp0 : EPOCH 9 : ACC 72.20
+==========================================
+EXP: 1
+exp1 : EPOCH 0 : ACC 41.40
+exp1 : EPOCH 1 : ACC 47.84
+exp1 : EPOCH 2 : ACC 59.12
+exp1 : EPOCH 3 : ACC 58.16
+exp1 : EPOCH 4 : ACC 61.28
+exp1 : EPOCH 5 : ACC 61.40
+exp1 : EPOCH 6 : ACC 64.16
+exp1 : EPOCH 7 : ACC 61.92
+exp1 : EPOCH 8 : ACC 66.12
+exp1 : EPOCH 9 : ACC 61.72
+==========================================
+EXP: 2
+exp2 : EPOCH 0 : ACC 43.32
+exp2 : EPOCH 1 : ACC 60.08
+exp2 : EPOCH 2 : ACC 63.84
+exp2 : EPOCH 3 : ACC 66.88
+exp2 : EPOCH 4 : ACC 64.88
+exp2 : EPOCH 5 : ACC 72.68
+exp2 : EPOCH 6 : ACC 71.16
+exp2 : EPOCH 7 : ACC 73.12
+exp2 : EPOCH 8 : ACC 72.80
+exp2 : EPOCH 9 : ACC 72.56
+==========================================
+EXP: 3
+exp3 : EPOCH 0 : ACC 44.48
+exp3 : EPOCH 1 : ACC 59.08
+exp3 : EPOCH 2 : ACC 64.28
+exp3 : EPOCH 3 : ACC 67.40
+exp3 : EPOCH 4 : ACC 71.60
+exp3 : EPOCH 5 : ACC 72.24
+exp3 : EPOCH 6 : ACC 75.72
+exp3 : EPOCH 7 : ACC 75.64
+exp3 : EPOCH 8 : ACC 72.12
+exp3 : EPOCH 9 : ACC 78.40
+==========================================
+EXP: 4
+exp4 : EPOCH 0 : ACC 44.76
+exp4 : EPOCH 1 : ACC 53.28
+exp4 : EPOCH 2 : ACC 58.00
+exp4 : EPOCH 3 : ACC 56.76
+exp4 : EPOCH 4 : ACC 61.56
+exp4 : EPOCH 5 : ACC 61.36
+exp4 : EPOCH 6 : ACC 61.24
+exp4 : EPOCH 7 : ACC 63.36
+exp4 : EPOCH 8 : ACC 66.96
+exp4 : EPOCH 9 : ACC 69.24
+==========================================
+EXP: 5
+exp5 : EPOCH 0 : ACC 51.60
+exp5 : EPOCH 1 : ACC 64.84
+exp5 : EPOCH 2 : ACC 68.80
+exp5 : EPOCH 3 : ACC 71.28
+exp5 : EPOCH 4 : ACC 70.36
+exp5 : EPOCH 5 : ACC 74.16
+exp5 : EPOCH 6 : ACC 72.96
+exp5 : EPOCH 7 : ACC 74.88
+exp5 : EPOCH 8 : ACC 77.44
+exp5 : EPOCH 9 : ACC 74.04
+==========================================
+EXP: 6
+exp6 : EPOCH 0 : ACC 50.20
+exp6 : EPOCH 1 : ACC 63.56
+exp6 : EPOCH 2 : ACC 66.52
+exp6 : EPOCH 3 : ACC 68.32
+exp6 : EPOCH 4 : ACC 69.92
+exp6 : EPOCH 5 : ACC 71.32
+exp6 : EPOCH 6 : ACC 72.64
+exp6 : EPOCH 7 : ACC 72.52
+exp6 : EPOCH 8 : ACC 71.20
+exp6 : EPOCH 9 : ACC 74.36
+==========================================
+EXP: 7
+exp7 : EPOCH 0 : ACC 53.00
+exp7 : EPOCH 1 : ACC 64.76
+exp7 : EPOCH 2 : ACC 69.32
+exp7 : EPOCH 3 : ACC 71.72
+exp7 : EPOCH 4 : ACC 74.12
+exp7 : EPOCH 5 : ACC 72.64
+exp7 : EPOCH 6 : ACC 73.00
+exp7 : EPOCH 7 : ACC 75.20
+exp7 : EPOCH 8 : ACC 76.32
+exp7 : EPOCH 9 : ACC 75.48
+==========================================
+EXP: 8
+exp8 : EPOCH 0 : ACC 47.12
+exp8 : EPOCH 1 : ACC 61.60
+exp8 : EPOCH 2 : ACC 68.24
+exp8 : EPOCH 3 : ACC 71.00
+exp8 : EPOCH 4 : ACC 74.80
+exp8 : EPOCH 5 : ACC 75.92
+exp8 : EPOCH 6 : ACC 76.00
+exp8 : EPOCH 7 : ACC 77.56
+exp8 : EPOCH 8 : ACC 76.56
+exp8 : EPOCH 9 : ACC 77.96
+==========================================
+EXP: 9
+exp9 : EPOCH 0 : ACC 54.56
+exp9 : EPOCH 1 : ACC 63.56
+exp9 : EPOCH 2 : ACC 68.48
+exp9 : EPOCH 3 : ACC 71.76
+exp9 : EPOCH 4 : ACC 73.92
+exp9 : EPOCH 5 : ACC 71.96
+exp9 : EPOCH 6 : ACC 74.20
+exp9 : EPOCH 7 : ACC 75.84
+exp9 : EPOCH 8 : ACC 76.12
+exp9 : EPOCH 9 : ACC 74.64
+==========================================
+EXP: 10
+exp10 : EPOCH 0 : ACC 69.08
+exp10 : EPOCH 1 : ACC 77.32
+exp10 : EPOCH 2 : ACC 80.20
+exp10 : EPOCH 3 : ACC 81.80
+exp10 : EPOCH 4 : ACC 81.80
+exp10 : EPOCH 5 : ACC 82.32
+exp10 : EPOCH 6 : ACC 83.32
+exp10 : EPOCH 7 : ACC 85.36
+exp10 : EPOCH 8 : ACC 84.04
+exp10 : EPOCH 9 : ACC 84.60
+==========================================
+EXP: 11
+exp11 : EPOCH 0 : ACC 61.84
+exp11 : EPOCH 1 : ACC 72.04
+exp11 : EPOCH 2 : ACC 79.08
+exp11 : EPOCH 3 : ACC 78.68
+exp11 : EPOCH 4 : ACC 81.88
+exp11 : EPOCH 5 : ACC 82.80
+exp11 : EPOCH 6 : ACC 81.64
+exp11 : EPOCH 7 : ACC 83.08
+exp11 : EPOCH 8 : ACC 83.52
+exp11 : EPOCH 9 : ACC 81.40
+==========================================
+EXP: 12
+exp12 : EPOCH 0 : ACC 45.72
+exp12 : EPOCH 1 : ACC 60.68
+exp12 : EPOCH 2 : ACC 68.00
+exp12 : EPOCH 3 : ACC 69.04
+exp12 : EPOCH 4 : ACC 72.28
+exp12 : EPOCH 5 : ACC 75.04
+exp12 : EPOCH 6 : ACC 73.84
+exp12 : EPOCH 7 : ACC 76.52
+exp12 : EPOCH 8 : ACC 76.36
+exp12 : EPOCH 9 : ACC 77.20
+==========================================
+EXP: 13
+exp13 : EPOCH 0 : ACC 56.60
+exp13 : EPOCH 1 : ACC 70.20
+exp13 : EPOCH 2 : ACC 74.68
+exp13 : EPOCH 3 : ACC 77.88
+exp13 : EPOCH 4 : ACC 79.08
+exp13 : EPOCH 5 : ACC 83.52
+exp13 : EPOCH 6 : ACC 84.08
+exp13 : EPOCH 7 : ACC 83.72
+exp13 : EPOCH 8 : ACC 85.44
+exp13 : EPOCH 9 : ACC 84.44
+==========================================
+EXP: 14
+exp14 : EPOCH 0 : ACC 65.12
+exp14 : EPOCH 1 : ACC 77.12
+exp14 : EPOCH 2 : ACC 80.20
+exp14 : EPOCH 3 : ACC 82.28
+exp14 : EPOCH 4 : ACC 80.76
+exp14 : EPOCH 5 : ACC 81.96
+exp14 : EPOCH 6 : ACC 83.84
+exp14 : EPOCH 7 : ACC 84.88
+exp14 : EPOCH 8 : ACC 83.40
+exp14 : EPOCH 9 : ACC 85.40
+==========================================
+EXP: 15
+exp15 : EPOCH 0 : ACC 66.56
+exp15 : EPOCH 1 : ACC 72.96
+exp15 : EPOCH 2 : ACC 74.32
+exp15 : EPOCH 3 : ACC 77.96
+exp15 : EPOCH 4 : ACC 79.40
+exp15 : EPOCH 5 : ACC 78.44
+exp15 : EPOCH 6 : ACC 78.80
+exp15 : EPOCH 7 : ACC 81.96
+exp15 : EPOCH 8 : ACC 80.20
+exp15 : EPOCH 9 : ACC 82.20
+==========================================
+EXP: 16
+exp16 : EPOCH 0 : ACC 71.96
+exp16 : EPOCH 1 : ACC 80.32
+exp16 : EPOCH 2 : ACC 83.00
+exp16 : EPOCH 3 : ACC 84.68
+exp16 : EPOCH 4 : ACC 84.16
+exp16 : EPOCH 5 : ACC 84.24
+exp16 : EPOCH 6 : ACC 85.00
+exp16 : EPOCH 7 : ACC 84.32
+exp16 : EPOCH 8 : ACC 85.80
+exp16 : EPOCH 9 : ACC 86.12
+==========================================
+EXP: 17
+exp17 : EPOCH 0 : ACC 72.36
+exp17 : EPOCH 1 : ACC 79.36
+exp17 : EPOCH 2 : ACC 81.80
+exp17 : EPOCH 3 : ACC 85.12
+exp17 : EPOCH 4 : ACC 84.84
+exp17 : EPOCH 5 : ACC 85.96
+exp17 : EPOCH 6 : ACC 88.56
+exp17 : EPOCH 7 : ACC 87.68
+exp17 : EPOCH 8 : ACC 88.60
+exp17 : EPOCH 9 : ACC 88.60
+==========================================
+EXP: 18
+exp18 : EPOCH 0 : ACC 57.00
+exp18 : EPOCH 1 : ACC 63.08
+exp18 : EPOCH 2 : ACC 67.76
+exp18 : EPOCH 3 : ACC 68.16
+exp18 : EPOCH 4 : ACC 72.68
+exp18 : EPOCH 5 : ACC 72.28
+exp18 : EPOCH 6 : ACC 72.80
+exp18 : EPOCH 7 : ACC 73.96
+exp18 : EPOCH 8 : ACC 75.76
+exp18 : EPOCH 9 : ACC 74.00
+==========================================
+EXP: 19
+exp19 : EPOCH 0 : ACC 66.00
+exp19 : EPOCH 1 : ACC 73.64
+exp19 : EPOCH 2 : ACC 77.64
+exp19 : EPOCH 3 : ACC 77.12
+exp19 : EPOCH 4 : ACC 80.64
+exp19 : EPOCH 5 : ACC 83.24
+exp19 : EPOCH 6 : ACC 83.32
+exp19 : EPOCH 7 : ACC 83.84
+exp19 : EPOCH 8 : ACC 85.68
+exp19 : EPOCH 9 : ACC 85.28
