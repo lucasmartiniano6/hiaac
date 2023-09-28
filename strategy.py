@@ -120,7 +120,7 @@ class Strategy:
             log.append(log_str)
             print(log_str)
         #update old classes
-        self.old_classes = torch.tensor(experience.classes_in_this_experience)
+        self.old_classes = torch.tensor(experience.classes_in_this_experience).to(self.device)
         self.Mod_CD.set_old_classes(self.old_classes)
         # update exemplar set with herding selection
         print("Updating exemplar set...")
