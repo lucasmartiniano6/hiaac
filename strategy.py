@@ -91,8 +91,6 @@ class Strategy:
                     inputs_red, labels_red, *_ = zip(*batch_red)
                     inputs_red = torch.stack(inputs_red)
                     labels_red = torch.tensor(labels_red)
-                    self.criterion = self.Mod_CD
-                    self._train_batch(inputs_red, labels_red)
 
                     # Black dot - Old classes
                     inputs_black, labels_black, *_ = zip(*batch_black)
@@ -102,10 +100,8 @@ class Strategy:
                     # Balanced - Current + Old classes
                     inputs_balanced = torch.cat((inputs_red, inputs_black), 0)
                     labels_balanced = torch.cat((labels_red, labels_black), 0)
-                    self.criterion = self.CE
                     self._train_batch(inputs_balanced, labels_balanced)
             else:
-                self.criterion = self.CE
                 for batch in tqdm(self.batched(self.experience.dataset, mb_size)):
                     inputs, labels, *_ = zip(*batch)
                     inputs = torch.stack(inputs) # 8, 3, 32, 32
@@ -119,8 +115,8 @@ class Strategy:
             print(log_str)
 
         #update old classes
-        self.old_classes = torch.tensor(experience.previous_classes).to(self.device) if experience.current_experience > 0 else None
-        self.Mod_CD.set_old_classes(self.old_classes)
+        #self.old_classes = torch.tensor(experience.previous_classes, dtype=torch.long).to(self.device)
+        #self.Mod_CD.set_old_classes(self.old_classes)
         #update exemplar set with herding selection
         print("Updating exemplar set...")
         herding = HerdingSelectionStrategy(self.model, 'feature_extractor')

@@ -1,0 +1,25 @@
+==========================================
+CURR EXP: 0
+   EXP 0: 60.4
+   EXP 1: 0.0
+   EXP 2: 0.0
+   EXP 3: 0.0
+   EXP 4: 0.0
+   EXP 5: 0.0
+   EXP 6: 0.0
+   EXP 7: 0.0
+   EXP 8: 0.0
+   EXP 9: 0.0
+   EXP 10: 0.0
+   EXP 11: 0.0
+   EXP 12: 0.0
+   EXP 13: 0.0
+   EXP 14: 0.0
+   EXP 15: 0.0
+   EXP 16: 0.0
+   EXP 17: 0.0
+   EXP 18: 0.0
+   EXP 19: 0.0
+avg_acc_seen_classes: 60.4
+avg_acc_all_classes: 3.02
+
