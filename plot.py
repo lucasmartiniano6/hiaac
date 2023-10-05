@@ -63,7 +63,7 @@ def loss_per_epoch(experience, path, color):
     plt.title(f'Exp{str(experience)} Loss per Epoch')
 
 
-def acc(paths):
+def acc(paths, exp=0):
     plt.clf()
     avg_acc_per_class_step(paths[0], color='r')
     avg_acc_per_class_step(paths[1], color='b')
@@ -71,20 +71,20 @@ def acc(paths):
     plt.savefig('cmp/acc_class_' + ''.join((paths[0] + paths[1]).split('/')))
 
     plt.clf()
-    avg_acc_per_epoch(0, paths[0], color='r')
-    avg_acc_per_epoch(0, paths[1], color='b')
+    avg_acc_per_epoch(exp, paths[0], color='r')
+    avg_acc_per_epoch(exp, paths[1], color='b')
     #plt.show()
     plt.savefig('cmp/acc_epoch_' + ''.join((paths[0] + paths[1]).split('/')))
 
-def loss(paths):
+def loss(paths, exp=0):
     plt.clf()
-    loss_per_epoch(0, paths[0], color='r')
-    loss_per_epoch(0, paths[1], color='b')
+    loss_per_epoch(exp, paths[0], color='r')
+    loss_per_epoch(exp, paths[1], color='b')
     #plt.show()
     plt.savefig('cmp/loss_epoch_' + ''.join((paths[0] + paths[1]).split('/')))
  
 if __name__ == '__main__':
-    acc(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"])
-    acc(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"])
-    loss(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"])
-    loss(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"])
+    acc(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"], exp=0)
+    acc(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"], exp=0)
+    loss(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"], exp=0)
+    loss(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"], exp=0)

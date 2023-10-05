@@ -16,6 +16,7 @@ def main():
     args = parser.parse_args()
 
     open("log.txt", "w").close()
+    open("loss.txt", "w").close()
     open("res.txt", "w").close()
 
     start_time = time.time()

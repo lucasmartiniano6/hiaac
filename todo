@@ -1,9 +1,4 @@
-rodar CE padrão
-    com exemplar set OK
-    sem exemplar set OK
-rodar CE modificada
-    com exemplar set OK
-    
-obs:
-    loss & acurácia
-    10 epochs ta ok
+rodar com todas as experiências concatenadas e sem exemplar set (ordem aleatória) -> acurácia ~80%
+
+
+

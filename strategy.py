@@ -84,27 +84,53 @@ class Strategy:
         self.criterion = self.CE
         mb_size = self.args.train_mb_size
         for epoch in range(self.args.epochs):
-            self.criterion = self.CE
-            for batch in tqdm(self.batched(self.experience.dataset, mb_size)):
-                inputs, labels, *_ = zip(*batch)
-                inputs = torch.stack(inputs) # 8, 3, 32, 32
-                labels = torch.tensor(labels) # 8 
-                self._train_batch(inputs, labels)
+            if experience.current_experience > 0 : 
+                steps = zip(self.batched(self.experience.dataset, mb_size), self.batched(itertools.cycle(self.exemplar), mb_size))
+                for batch_red, batch_black in tqdm(steps): 
+                    # Red dot - Current classes
+                    inputs_red, labels_red, *_ = zip(*batch_red)
+                    inputs_red = torch.stack(inputs_red)
+                    labels_red = torch.tensor(labels_red)
+                    self.criterion = self.Mod_CD
+                    self._train_batch(inputs_red, labels_red)
+
+                    # Black dot - Old classes
+                    inputs_black, labels_black, *_ = zip(*batch_black)
+                    inputs_black = torch.stack(inputs_black)
+                    labels_black = torch.tensor(labels_black)
+
+                    # Balanced - Current + Old classes
+                    inputs_balanced = torch.cat((inputs_red, inputs_black), 0)
+                    labels_balanced = torch.cat((labels_red, labels_black), 0)
+                    self.criterion = self.CE
+                    self._train_batch(inputs_balanced, labels_balanced)
+            else:
+                self.criterion = self.CE
+                for batch in tqdm(self.batched(self.experience.dataset, mb_size)):
+                    inputs, labels, *_ = zip(*batch)
+                    inputs = torch.stack(inputs) # 8, 3, 32, 32
+                    labels = torch.tensor(labels) # 8 
+
+                    self._train_batch(inputs, labels)
 
             acc_curr_exp = self.validate_exp(experience)
             log_str = f'exp{experience.current_experience} : EPOCH {epoch} : ACC {acc_curr_exp:.2f}'
             log.append(log_str)
             print(log_str)
-        # update exemplar set with herding selection
-        #print("Updating exemplar set...")
-        #herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
-        #exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
-        #book = {}
-        #while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
-        #    sample = self.experience.dataset[next(exemplar_idx)]
-        #    if(book.get(sample[1], 0) < self.q):
-        #        book[sample[1]] = book.get(sample[1], 0) + 1
-        #        self.exemplar.append(sample)
+
+        #update old classes
+        self.old_classes = torch.tensor(experience.previous_classes).to(self.device) if experience.current_experience > 0 else None
+        self.Mod_CD.set_old_classes(self.old_classes)
+        #update exemplar set with herding selection
+        print("Updating exemplar set...")
+        herding = HerdingSelectionStrategy(self.model, 'feature_extractor')
+        exemplar_idx = iter(herding.make_sorted_indices(self, self.experience.dataset))
+        book = {}
+        while sum(book.values()) < self.q * len(self.experience.classes_in_this_experience):
+            sample = self.experience.dataset[next(exemplar_idx)]
+            if(book.get(sample[1], 0) < self.q):
+                book[sample[1]] = book.get(sample[1], 0) + 1
+                self.exemplar.append(sample)
         # torch.save(self.model.state_dict(), 'pth/saved_model.pth')
         with(open("log.txt", "a")) as f:
             f.write("==========================================\n")
