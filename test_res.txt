@@ -1,0 +1,11 @@
+singleExp :
+Epoch [0], last_lr: 0.02799, train_loss: 4.1921, val_loss: 3.8897, val_acc: 0.1137
+Epoch [1], last_lr: 0.07600, train_loss: 3.6011, val_loss: 3.3241, val_acc: 0.1966
+Epoch [2], last_lr: 0.10000, train_loss: 3.1739, val_loss: 3.0011, val_acc: 0.2595
+Epoch [3], last_lr: 0.09505, train_loss: 2.8288, val_loss: 2.5970, val_acc: 0.3378
+Epoch [4], last_lr: 0.08117, train_loss: 2.5706, val_loss: 2.3915, val_acc: 0.3833
+Epoch [5], last_lr: 0.06113, train_loss: 2.3514, val_loss: 2.2336, val_acc: 0.4171
+Epoch [6], last_lr: 0.03887, train_loss: 2.1598, val_loss: 2.0028, val_acc: 0.4661
+Epoch [7], last_lr: 0.01883, train_loss: 1.9431, val_loss: 1.7899, val_acc: 0.5159
+Epoch [8], last_lr: 0.00495, train_loss: 1.6629, val_loss: 1.5480, val_acc: 0.5727
+Epoch [9], last_lr: 0.00000, train_loss: 1.4101, val_loss: 1.4746, val_acc: 0.5974

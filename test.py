@@ -75,7 +75,7 @@ def main():
     model = to_device(SlimResNet34(100), device)
 
     history = [evaluate(model, valid_dl)]
-    epochs = 30
+    epochs = 10
     max_lr = 0.1
     grad_clip = 0.1
     weight_decay = 1e-4

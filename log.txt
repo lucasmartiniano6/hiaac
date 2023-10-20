@@ -1,9 +1,12 @@
 ==========================================
 EXP: 0
-exp0 : EPOCH 0 : ACC 48.92
-==========================================
-EXP: 1
-exp1 : EPOCH 0 : ACC 32.96
-==========================================
-EXP: 2
-exp2 : EPOCH 0 : ACC 43.28
+exp0 : EPOCH 0 : ACC 54.44
+exp0 : EPOCH 1 : ACC 56.96
+exp0 : EPOCH 2 : ACC 53.36
+exp0 : EPOCH 3 : ACC 60.48
+exp0 : EPOCH 4 : ACC 64.36
+exp0 : EPOCH 5 : ACC 63.88
+exp0 : EPOCH 6 : ACC 66.68
+exp0 : EPOCH 7 : ACC 65.68
+exp0 : EPOCH 8 : ACC 67.92
+exp0 : EPOCH 9 : ACC 67.76

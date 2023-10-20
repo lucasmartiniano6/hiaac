@@ -83,8 +83,22 @@ def loss(paths, exp=0):
     #plt.show()
     plt.savefig('cmp/loss_epoch_' + ''.join((paths[0] + paths[1]).split('/')))
  
+def test(color='r'):
+    avg_acc = [11.37, 19.66, 25.95, 33.78, 38.33, 41.71, 46.6, 51.59, 57.27, 59.74]
+    epoch = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    plt.scatter(epoch,avg_acc, c=color)
+    plt.plot(epoch, avg_acc, color+'-', label=f'singleExp_ce_sem_exemplar_acc_per_epoch')
+    plt.legend()
+    plt.ylim(0, 100)
+    plt.ylabel(f'Accuracy')
+    plt.xlabel('Epoch')
+    plt.title(f'SingleExp Accuracy per Epoch')
+    plt.show()
+
+
 if __name__ == '__main__':
-    acc(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"], exp=0)
-    acc(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"], exp=0)
-    loss(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"], exp=0)
-    loss(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"], exp=0)
+    #acc(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"], exp=0)
+    #acc(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"], exp=0)
+    #loss(["cmp/ce_com_exemplar/", "cmp/ce_sem_exemplar/"], exp=0)
+    #loss(["cmp/ce_com_exemplar/", "cmp/ceMod_com_exemplar/"], exp=0)
+    test()
