@@ -58,26 +58,8 @@ def main(args):
     )
 
     # --- BENCHMARK CREATION
-    cifar_train = CIFAR100(
-        root=expanduser("~") + "/.avalanche/data/cifar10/",
-        train=True,
-        download=True,
-        transform=transform,
-    )
-    cifar_test = CIFAR100(
-        root=expanduser("~") + "/.avalanche/data/cifar10/",
-        train=False,
-        download=True,
-        transform=transform,
-    )
-    benchmark = nc_benchmark(
-        cifar_train,
-        cifar_test,
-        10,
-        task_labels=False,
-        seed=1234,
-        fixed_class_order=[i for i in range(10)],
-    )
+    from avalanche.benchmarks.classic import SplitCIFAR100
+    benchmark = SplitCIFAR100(n_experiences=20, train_transform=transform, eval_transform=transform)
 
     # choose some metrics and evaluation method
     interactive_logger = InteractiveLogger()
@@ -95,7 +77,7 @@ def main(args):
         torch.optim.SGD(model.parameters(), lr=0.01),
         CrossEntropyLoss(),
         train_mb_size=100,
-        train_epochs=10,
+        train_epochs=30,
         eval_mb_size=100,
         device=device,
         plugins=[ReplayPlugin(mem_size=1000)],
