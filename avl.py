@@ -20,7 +20,7 @@ import argparse
 import torch
 from torch.nn import CrossEntropyLoss
 from torchvision import transforms
-from torchvision.datasets import CIFAR10
+from torchvision.datasets import CIFAR100
 from torchvision.transforms import ToTensor
 import torch.optim.lr_scheduler
 from avalanche.benchmarks import nc_benchmark
@@ -38,7 +38,7 @@ from avalanche.training.plugins import EvaluationPlugin
 
 def main(args):
     # Model getter: specify dataset and depth of the network.
-    model = pytorchcv_wrapper.resnet("cifar10", depth=20, pretrained=False)
+    model = pytorchcv_wrapper.resnet("cifar100", depth=56, pretrained=False)
 
     # Or get a more specific model. E.g. wide resnet, with depth 40 and growth
     # factor 8 for Cifar 10.
@@ -58,13 +58,13 @@ def main(args):
     )
 
     # --- BENCHMARK CREATION
-    cifar_train = CIFAR10(
+    cifar_train = CIFAR100(
         root=expanduser("~") + "/.avalanche/data/cifar10/",
         train=True,
         download=True,
         transform=transform,
     )
-    cifar_test = CIFAR10(
+    cifar_test = CIFAR100(
         root=expanduser("~") + "/.avalanche/data/cifar10/",
         train=False,
         download=True,
@@ -73,7 +73,7 @@ def main(args):
     benchmark = nc_benchmark(
         cifar_train,
         cifar_test,
-        5,
+        20,
         task_labels=False,
         seed=1234,
         fixed_class_order=[i for i in range(10)],
@@ -95,7 +95,7 @@ def main(args):
         torch.optim.SGD(model.parameters(), lr=0.01),
         CrossEntropyLoss(),
         train_mb_size=100,
-        train_epochs=1,
+        train_epochs=10,
         eval_mb_size=100,
         device=device,
         plugins=[ReplayPlugin(mem_size=1000)],
