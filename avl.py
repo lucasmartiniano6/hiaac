@@ -73,7 +73,7 @@ def main(args):
     benchmark = nc_benchmark(
         cifar_train,
         cifar_test,
-        20,
+        10,
         task_labels=False,
         seed=1234,
         fixed_class_order=[i for i in range(10)],
@@ -107,6 +107,7 @@ def main(args):
     results = []
     for experience in benchmark.train_stream:
         print("Start of experience ", experience.current_experience)
+        print('Classes in this exp', experience.classes_in_this_experience)
         cl_strategy.train(experience)
         print("Training completed")
 
